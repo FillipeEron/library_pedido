@@ -10,6 +10,7 @@ environment:
 dependencies:
   hive: ^2.2.3
   http: ^1.2.1
+  puppeteer: ^3.12.0
   # path: ^1.8.0
 
 dev_dependencies:

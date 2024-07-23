@@ -10,6 +10,7 @@ class FolhaPortaHDF {
   EspessuraFolha espessuraFolha;
   CorHDF cor;
   Desenho desenho;
+  bool pintura;
 
   FolhaPortaHDF({
     required this.largura,
@@ -17,6 +18,7 @@ class FolhaPortaHDF {
     this.espessuraFolha = EspessuraFolha.e30,
     required this.cor,
     this.desenho = Desenho.nenhum,
+    this.pintura = false,
   });
 }
 
@@ -59,40 +61,75 @@ Future<int> valorDBLargura(String chave) async {
   return box.get(chave);
 }
 
-/*String gerarPreco(FolhaPortaHDF folha, TabelaPreco tabela) {
-  if (tabela == TabelaPreco.revenda) {
-    if (folha.largura == 600 || folha.largura == 700 || folha.largura == 800) {
-      return "REVENDA#${folha.espessuraFolha.espessura}X600/700/800";
-    } else if (folha.largura <= 820) {
-      return "REVENDA#${folha.espessuraFolha.espessura}X600/700/800*";
-    } else if (folha.largura <= 900) {
-      return "REVENDA#${folha.espessuraFolha.espessura}X900";
-    }
-  }
-}*/
-
-/*Future<int> gerarPreco(FolhaPortaHDF folha, TabelaPreco tabela) async {
-  var box = await Hive.openBox("PRECO", path: pathData);
-  int sobmedida = 60;
+Future<int> precificar(FolhaPortaHDF folha, TabelaPreco tabelaPreco) async {
   int preco = 0;
+  preco += await precificarLargura(folha, tabelaPreco);
+  preco += precificarAltura(folha);
+  preco += precificarPintura(folha.pintura);
+  preco += precificarDesenho(folha.desenho);
 
-  if (tabela == TabelaPreco.revenda) {
-    if (folha.largura == 600 || folha.largura == 700 || folha.largura == 800) {
-      preco +=
-          box.get("REVENDA#HDF#${folha.espessuraFolha.espessura}X600/700/800#")
-              as int;
-    } else if (folha.largura <= 820) {
-      preco += sobmedida +
-              box.get(
-                  "REVENDA#HDF#${folha.espessuraFolha.espessura}X600/700/800#")
-          as int;
-    } else {
-      return 567;
-    }
+  return preco;
+}
+
+int precificarDesenho(Desenho desenho) {
+  if (desenho == Desenho.nenhum) {
+    return 0;
   } else {
-    return 123;
+    return 5;
   }
-}*/
+}
+
+int precificarPintura(bool pintura) {
+  if (pintura) {
+    return 5;
+  } else {
+    return 0;
+  }
+}
+
+Future<int> precificarLargura(
+    FolhaPortaHDF folha, TabelaPreco tabelaPreco) async {
+  try {
+    String chaveDB = chaveDBLargura(folha, tabelaPreco);
+    return await valorDBLargura(chaveDB);
+  } catch (e) {
+    throw ("ERRO DE BUSCA CHAVE <-> VALOR : $e");
+  }
+}
+
+int precificarAltura(FolhaPortaHDF folha) {
+  if (folha.altura < 2100 && !isLarguraFaixaPadrao(folha.largura)) {
+    return 0;
+  } else if (folha.altura < 2100 && isLarguraFaixaPadrao(folha.largura)) {
+    return 60;
+  } else if (folha.altura == 2100) {
+    return 0;
+  } else if (folha.altura > 2100 && folha.altura < 2200) {
+    return 60;
+  } else if (folha.altura >= 2200 && folha.altura < 2300) {
+    return 90;
+  } else if (folha.altura >= 2300 && folha.altura < 2400) {
+    return 120;
+  } else if (folha.altura >= 2400 && folha.altura < 2500) {
+    return 150;
+  } else {
+    throw "ALTURA FOLHA ${folha.altura} NÃO PERTENCE A FAIXA DE ALTURA DE ANALISE";
+  }
+}
+
+bool isLarguraFaixaPadrao(int largura) {
+  if (largura == 600 ||
+      largura == 700 ||
+      largura == 800 ||
+      largura == 900 ||
+      largura == 1000 ||
+      largura == 1100 ||
+      largura == 1200) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 String rastrearProdutoTiny(FolhaPortaHDF folha) {
   if (folha.cor == CorHDF.branco && folha.desenho == Desenho.nenhum) {
@@ -112,19 +149,10 @@ String rastrearProdutoTiny(FolhaPortaHDF folha) {
   }
 }
 
-/*String gerarChaveDBProduto(FolhaPortaHDF folha) {
-  if (folha.cor == CorHDF.branco && folha.desenhada == false) {
-    return "BRANCO#LISA";
-  }
+class Proposta {
+  List<FolhaPortaHDF> folhas = [];
 
-  if (folha.desenhada == false) {
-    return "LISA";
-  } else {
-    return "FRIZZATTA";
+  void adicionarProduto(FolhaPortaHDF folha) {
+    folhas.add(folha);
   }
 }
-
-Future<String> rastrearDBProduto(String chave) async {
-  var box = await Hive.openBox("PRODUTO", path: pathData);
-  return box.get(chave);
-}*/

@@ -11,15 +11,26 @@ import 'dart:convert' as convert;
 const String _token = '3bafd53e2da95f4bd72afb6874d0e563f90b54bf';
 const String _formato = 'json';
 void main(List<String> arguments) async {
-  var folha01 =
-      FolhaPortaHDF(largura: 700, cor: CorHDF.mogno, desenho: Desenho.r03);
+  var folha01 = FolhaPortaHDF(
+      largura: 600,
+      cor: CorHDF.mogno,
+      desenho: Desenho.nenhum,
+      altura: 2100,
+      pintura: false);
 
   var produto = await tiny.fetchProduto(rastrearProdutoTiny(folha01));
   produto.descricaoComplementar = gerarDescricao(folha01);
+  produto.preco = await precificar(folha01, TabelaPreco.revenda);
+  //var chave = chaveDBLargura(folha01, TabelaPreco.revenda);
+  //produto.preco = await valorDBLargura(chave);
+  //produto.preco = await precificarLargura(folha01, TabelaPreco.revenda);
 
-  var chave = chaveDBLargura(folha01, TabelaPreco.revenda);
-  produto.preco = await valorDBLargura(chave);
+  //print(produto.preco);
+  //produto.preco += precificarAltura(folha01);
+  //produto.preco += precificarDesenho(folha01.desenho);
   print(produto.preco);
+
+  //print(produto.preco);
 }
 
 
