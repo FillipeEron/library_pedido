@@ -1,6 +1,7 @@
 import 'package:auxiliar_pedidos/enums.dart';
 import 'package:auxiliar_pedidos/utils.dart';
 import 'package:hive/hive.dart';
+import 'package:auxiliar_pedidos/tiny.dart' as tiny;
 
 const String pathData = "../data/data_preco/data";
 
@@ -150,9 +151,23 @@ String rastrearProdutoTiny(FolhaPortaHDF folha) {
 }
 
 class Proposta {
-  List<FolhaPortaHDF> folhas = [];
+  List<Item> itens = [];
+  TabelaPreco tabelaPreco;
 
-  void adicionarProduto(FolhaPortaHDF folha) {
-    folhas.add(folha);
+  Proposta({required this.tabelaPreco});
+
+  Future<void> adicionarProduto(FolhaPortaHDF folha, int quantidade) async {
+    var produto = await tiny.fetchProduto(rastrearProdutoTiny(folha));
+    produto.descricaoComplementar = gerarDescricao(folha);
+    produto.preco = await precificar(folha, TabelaPreco.revenda);
+    Item item = Item(quantidade: quantidade, produto: produto);
+    itens.add(item);
   }
+}
+
+class Item {
+  int quantidade;
+  tiny.Produto produto;
+
+  Item({required this.quantidade, required this.produto});
 }

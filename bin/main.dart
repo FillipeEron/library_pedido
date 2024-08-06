@@ -18,19 +18,11 @@ void main(List<String> arguments) async {
       altura: 2100,
       pintura: false);
 
-  var produto = await tiny.fetchProduto(rastrearProdutoTiny(folha01));
-  produto.descricaoComplementar = gerarDescricao(folha01);
-  produto.preco = await precificar(folha01, TabelaPreco.revenda);
-  //var chave = chaveDBLargura(folha01, TabelaPreco.revenda);
-  //produto.preco = await valorDBLargura(chave);
-  //produto.preco = await precificarLargura(folha01, TabelaPreco.revenda);
-
-  //print(produto.preco);
-  //produto.preco += precificarAltura(folha01);
-  //produto.preco += precificarDesenho(folha01.desenho);
-  print(produto.preco);
-
-  //print(produto.preco);
+  var proposta = Proposta(tabelaPreco: TabelaPreco.revenda);
+  await proposta.adicionarProduto(folha01, 2);
+  print(proposta.itens.length);
+  print(proposta.itens[0].produto.preco);
+  print(proposta.itens[0].produto.descricaoComplementar);
 }
 
 
