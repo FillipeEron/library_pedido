@@ -3,10 +3,11 @@ import 'dart:ffi';
 import 'dart:math';
 import 'dart:io';
 
+import 'package:puppeteer/plugin.dart';
 import 'package:puppeteer/puppeteer.dart';
 
 // CLIENTE EXEMPLO - PROPOSTA NUMERO 4;
-// dart imposto 4 18.5
+// dart imposto.dart 4 18.5
 void main(List<String> arg) async {
   if (arg.length != 2) {
     throw "NECESSÁRIO TRÊS ARGUMENTOS";
@@ -18,9 +19,10 @@ void main(List<String> arg) async {
   double porcentagem = double.parse(arg[1]);
 
   var browser = await puppeteer.launch(
-      headless: false,
+      headless: true,
       waitForInitialPage: true,
-      slowMo: Duration(milliseconds: 60));
+      slowMo: Duration(milliseconds: 40),
+      defaultViewport: LaunchOptions.viewportNotOverride);
 
   var page = await browser.newPage();
 
@@ -52,7 +54,8 @@ void main(List<String> arg) async {
   }
 
   await page.waitForSelector("#idContatoPesquisa");
-  await page.type('input[id="idContatoPesquisa"]', codigo);
+  await page.type('input[id="idContatoPesquisa"]', codigo,
+      delay: Duration(seconds: 2));
   await page.keyboard.press(Key.enter);
 
   await page.waitForSelector('tr[id^="tr_"]');
@@ -65,39 +68,52 @@ void main(List<String> arg) async {
       "span => span.innerText");
   print(
       "Deseja modificar o preço da proposta PC$codigo do cliente: $value ? [S]/[N]");
-  String? response = stdin.readLineSync(encoding: utf8, retainNewlines: true);
-  print(response);
-  var char_responde = response!.codeUnits;
-  int char_s = 115;
-  int char_S = 83;
-  int char_n = 110;
-  int char_N = 78;
-  // int char_enter = 13; implementar o enter na decisão
+  String? response = stdin.readLineSync(retainNewlines: false);
 
-  if (char_responde[0] == char_S || char_responde[0] == char_s) {
+  if (response == 'S' || response == 's' || response == '\n') {
     print("CONTINUANDO O PROGRAMA");
     await page.click(".btn-edicao-item");
     var elements = await page.$$(".coluna-destaque");
     var length = elements.length / 2;
-    print(length.toInt());
-    var firstLineValue = await page.$eval(
+    //print(length.toInt());
+    if (length != 0) {
+      for (int i = 0; i < length; i++) {
+        //print(aplicarPorcentagem(firstLineValue, porcentagem));
+
+        await page.click(
+            "#colunaFim$i > button.btn.btn-link.btn-editar.hide-from-view",
+            delay: Duration(milliseconds: 500));
+        var statusEdicao = await page.$eval(
+            "#colunaFim$i > button.btn.btn-link.btn-editar.hide-from-view",
+            "span => span.innerText");
+        /*while (statusEdicao == "editar") {
+          await page.click(
+              clickCount: 2,
+              "#colunaFim$i > button.btn.btn-link.btn-editar.hide-from-view");
+          statusEdicao = await page.$eval(
+              "#colunaFim$i > button.btn.btn-link.btn-editar.hide-from-view",
+              "span => span.innerText");
+        }*/
+
+        print("linha $i - $statusEdicao");
+      }
+    } else {
+      print("PROPOSTA NÃO POSSUI ITENS CADASTRADOS.");
+      browser.close();
+    }
+
+    /*var firstLineValue = await page.$eval(
         "#detailItem0 > td:nth-child(8) > p", "value => value.innerText");
     print(aplicarPorcentagem(firstLineValue, porcentagem));
     String novoPreco = aplicarPorcentagem(firstLineValue, porcentagem);
     await page
         .click("#colunaFim0 > button.btn.btn-link.btn-editar.hide-from-view");
-    // #detailItem0 > td.text-right.item.preco-abaixo
-    // #precounitario0
-    // //*[@id="precounitario0"]
-    //await page.waitForSelector("#detailItem0 > td.text-right.item.preco-abaixo");
-    //await page.waitForXPath('//*[@id="precounitario0"]');
     var inputPreco = await page.$("#precounitario0");
     await inputPreco.click(clickCount: 3);
     await page.type('input[id="precounitario0"]', novoPreco);
-    // 'input[id="precounitario0"]'
     await page
-        .click("#colunaFim0 > button.btn.btn-link.btn-editar.hide-from-view");
-  } else if (char_responde[0] == char_n || char_responde[0] == char_N) {
+        .click("#colunaFim0 > button.btn.btn-link.btn-editar.hide-from-view");*/
+  } else if (response == 'N' || response == 'n') {
     print("FIM DO PROGRAMA");
     browser.close();
   } else {
