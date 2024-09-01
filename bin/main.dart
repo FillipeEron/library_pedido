@@ -15,7 +15,7 @@ void main(List<String> arguments) async {
       largura: 600,
       cor: CorHDF.mogno,
       desenho: Desenho.nenhum,
-      altura: 2100,
+      altura: 2200,
       pintura: false);
 
   var proposta = Proposta(tabelaPreco: TabelaPreco.revenda);
