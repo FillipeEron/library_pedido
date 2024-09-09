@@ -5,30 +5,155 @@ import 'dart:io';
 
 void main(List<String> args) {
   var propostaExcel = PropostaExcel();
-  propostaExcel.id = "123";
-  propostaExcel.numeroProposta = "4";
-  propostaExcel.data = "31/08/2028";
-  propostaExcel.idContato = "233";
-  propostaExcel.nomeContato = "2R ENGENHARIA E COMERCIO IMOBILIARIO LTDA";
-  propostaExcel.aosCuidados = "Fillipe Eron";
-  propostaExcel.listaPreco = "Padrão";
-  propostaExcel.desconto = "35,90";
-  propostaExcel.frete = "40,00";
-  propostaExcel.observacoes = "> SEM NOTA FISCAL";
-  propostaExcel.validade = "4";
-  propostaExcel.prazoEntrega = "15 A 2O DIAS UTEIS";
-  propostaExcel.situacao = "Rascunho";
-  propostaExcel.idProduto = "868957907";
-  propostaExcel.descricao = "FOLHA DE PORTA HDF MOGNO LISA";
-  propostaExcel.quantidade = "2";
-  propostaExcel.valorUnitario = "200";
-  propostaExcel.descricaoComplementar = "30X800X2100 MM";
-  propostaExcel.vendedor = "CLEBERSON";
+
+  propostaExcel.addProduto(
+      idProduto: "868957907",
+      descricao: "FOLHA DE PORTA HDF MOGNO LISA",
+      quantidade: "2",
+      valorUnitario: "150,0");
+
+  propostaExcel.addProduto(
+      idProduto: "786375476",
+      descricao: "ESPUMA EXPANSIVA 460G",
+      quantidade: "2",
+      valorUnitario: "35,00",
+      descricaoComplementar: "Porta conta da casa");
+
+  propostaExcel.camposGerais(
+      numeroProposta: "999",
+      data: "13/08/2024",
+      idContato: "233",
+      nomeContato: "2R ENGENHARIA E COMERCIO IMOBILIARIO LTDA",
+      aosCuidados: "Fillipe Eron",
+      listaPreco: "Padrão",
+      desconto: "35,00",
+      frete: "100,00",
+      observacoes: "Coisas de teste",
+      validade: "5",
+      prazoEntrega: "29/10/2024",
+      situacao: "rascunho",
+      vendedor: "Cleberson");
 
   propostaExcel.save();
 }
 
 class PropostaExcel {
+  static const String file = "../docs/propostas.xlsx";
+  static const String pathOutputFile =
+      "/home/eron/Documentos/library_pedido/docs/";
+  static const int firstLine = 1;
+  var campoGerais = Map<String, String>();
+  var listaProduto = List.empty(growable: true);
+  var cellPosition = {
+    "id": 0,
+    "numeroProposta": 1,
+    "data": 2,
+    "idContato": 4,
+    "nomeContato": 5,
+    "aosCuidados": 6,
+    "listaPreco": 7,
+    "desconto": 21,
+    "frete": 22,
+    "observacoes": 23,
+    "validade": 24,
+    "prazoEntrega": 25,
+    "situacao": 26,
+    "idProduto": 28,
+    "descricao": 29,
+    "quantidade": 30,
+    "valorUnitario": 31,
+    "descricaoComplementar": 32,
+    "vendedor": 33,
+  };
+
+  void camposGerais({
+    String? id,
+    String? numeroProposta,
+    String? data,
+    String? idContato,
+    String? nomeContato,
+    String? aosCuidados,
+    String? listaPreco,
+    String? desconto,
+    String? frete,
+    String? observacoes,
+    String? validade,
+    String? prazoEntrega,
+    String? situacao,
+    String? vendedor,
+  }) {
+    campoGerais["id"] = id ?? "";
+    campoGerais["numeroProposta"] = numeroProposta ?? "";
+    campoGerais["data"] = data ?? "";
+    campoGerais["idContato"] = idContato ?? "";
+    campoGerais["nomeContato"] = nomeContato ?? "";
+    campoGerais["aosCuidados"] = aosCuidados ?? "";
+    campoGerais["listaPreco"] = listaPreco ?? "";
+    campoGerais["desconto"] = desconto ?? "";
+    campoGerais["frete"] = frete ?? "";
+    campoGerais["observacoes"] = observacoes ?? "";
+    campoGerais["validade"] = validade ?? "";
+    campoGerais["prazoEntrega"] = prazoEntrega ?? "";
+    campoGerais["situacao"] = situacao ?? "";
+    campoGerais["vendedor"] = vendedor ?? "";
+  }
+
+  void addProduto({
+    required String idProduto,
+    required String descricao,
+    required String quantidade,
+    required String valorUnitario,
+    String? descricaoComplementar,
+  }) {
+    var produto = Map();
+    produto["idProduto"] = idProduto;
+    produto["descricao"] = descricao;
+    produto["quantidade"] = quantidade;
+    produto["valorUnitario"] = valorUnitario;
+    produto["descricaoComplementar"] = descricaoComplementar ?? "";
+    listaProduto.add(produto);
+  }
+
+  void save() {
+    String timeKey = this.timeKey();
+    var bytes = File(file).readAsBytesSync();
+    var excel = Excel.decodeBytes(bytes);
+    Sheet sheetObject = excel["Propostas Comerciais"];
+
+    for (int countLine = 0; countLine < listaProduto.length; countLine++) {
+      campoGerais.forEach((key, value) {
+        var cell = sheetObject.cell(CellIndex.indexByColumnRow(
+            columnIndex: cellPosition[key]!, rowIndex: firstLine + countLine));
+        cell.value = TextCellValue(value);
+      });
+
+      Map lista = listaProduto[countLine];
+      lista.forEach(((key, value) {
+        var cell = sheetObject.cell(CellIndex.indexByColumnRow(
+            columnIndex: cellPosition[key]!, rowIndex: firstLine + countLine));
+        cell.value = TextCellValue(value);
+      }));
+    }
+
+    List<int>? fileBytes = excel.save();
+    if (fileBytes != null) {
+      File("$pathOutputFile/proposta_$timeKey.xlsx")
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(fileBytes);
+    }
+  }
+
+  String timeKey() {
+    var now = DateTime.now();
+    String date = now.toString().substring(0, 10);
+    String time = now.toString().substring(11, 19).replaceAll(':', '-');
+    return "$date" + "_" + "$time";
+  }
+}
+
+
+
+/*class PropostaExcel {
   static const String file = "../docs/propostas.xlsx";
   static const String pathOutputFile =
       "/home/eron/Documentos/library_pedido/docs/";
@@ -156,4 +281,4 @@ class PropostaExcel {
     String time = now.toString().substring(11, 19).replaceAll(':', '-');
     return "$date" + "_" + "$time";
   }
-}
+}*/
