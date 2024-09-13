@@ -5,7 +5,7 @@ import 'package:auxiliar_pedidos/tiny.dart' as tiny;
 
 const String pathData = "../data/data_preco/data";
 
-class FolhaPortaHDF {
+class PortaHDF {
   int largura;
   int altura;
   EspessuraFolha espessuraFolha;
@@ -13,7 +13,7 @@ class FolhaPortaHDF {
   Desenho desenho;
   bool pintura;
 
-  FolhaPortaHDF({
+  PortaHDF({
     required this.largura,
     this.altura = 2100,
     this.espessuraFolha = EspessuraFolha.e30,
@@ -21,17 +21,43 @@ class FolhaPortaHDF {
     this.desenho = Desenho.nenhum,
     this.pintura = false,
   });
-}
 
-String gerarDescricao(FolhaPortaHDF folha) {
-  if (folha.desenho == Desenho.nenhum) {
-    return "${folha.espessuraFolha.espessura}X${folha.largura}X${folha.altura} MM;";
-  } else {
-    return "${folha.espessuraFolha.espessura}X${folha.largura}X${folha.altura} MM; DESENHO: ${folha.desenho.codigo};";
+  String descricao() {
+    if (this.desenho == Desenho.nenhum) {
+      return "${this.espessuraFolha.espessura}X${this.largura}X${this.altura} MM;";
+    } else {
+      return "${this.espessuraFolha.espessura}X${this.largura}X${this.altura} MM; DESENHO: ${this.desenho.codigo};";
+    }
+  }
+
+  String codigoTiny() {
+    if (this.cor == CorHDF.branco && this.desenho == Desenho.nenhum) {
+      return "868957520";
+    } else if (this.cor == CorHDF.branco && this.desenho != Desenho.nenhum) {
+      return "868957602";
+    } else if (this.cor == CorHDF.mogno && this.desenho == Desenho.nenhum) {
+      return "868957907";
+    } else if (this.cor == CorHDF.mogno && this.desenho != Desenho.nenhum) {
+      return "868958081";
+    } else if (this.cor == CorHDF.imbuia && this.desenho == Desenho.nenhum) {
+      return "868958144";
+    } else if (this.cor == CorHDF.imbuia && this.desenho != Desenho.nenhum) {
+      return "868958375";
+    } else {
+      throw "ERRO AO IDENTIFICAR CODIGO DO PRODUTO";
+    }
   }
 }
 
-String chaveDBLargura(FolhaPortaHDF folha, TabelaPreco tabelaPreco) {
+String gerarDescricao(PortaHDF porta) {
+  if (porta.desenho == Desenho.nenhum) {
+    return "${porta.espessuraFolha.espessura}X${porta.largura}X${porta.altura} MM;";
+  } else {
+    return "${porta.espessuraFolha.espessura}X${porta.largura}X${porta.altura} MM; DESENHO: ${porta.desenho.codigo};";
+  }
+}
+
+String chaveDBLargura(PortaHDF folha, TabelaPreco tabelaPreco) {
   if (folha.largura == 600 || folha.largura == 700 || folha.largura == 800) {
     return "${tabelaPreco.tabela}#HDF#${folha.espessuraFolha.espessura}X600/700/800#";
   } else if (folha.largura <= 820) {
@@ -62,7 +88,7 @@ Future<int> valorDBLargura(String chave) async {
   return box.get(chave);
 }
 
-Future<int> precificar(FolhaPortaHDF folha, TabelaPreco tabelaPreco) async {
+Future<int> precificar(PortaHDF folha, TabelaPreco tabelaPreco) async {
   int preco = 0;
   preco += await precificarLargura(folha, tabelaPreco);
   preco += precificarAltura(folha);
@@ -88,8 +114,7 @@ int precificarPintura(bool pintura) {
   }
 }
 
-Future<int> precificarLargura(
-    FolhaPortaHDF folha, TabelaPreco tabelaPreco) async {
+Future<int> precificarLargura(PortaHDF folha, TabelaPreco tabelaPreco) async {
   try {
     String chaveDB = chaveDBLargura(folha, tabelaPreco);
     return await valorDBLargura(chaveDB);
@@ -98,7 +123,7 @@ Future<int> precificarLargura(
   }
 }
 
-int precificarAltura(FolhaPortaHDF folha) {
+int precificarAltura(PortaHDF folha) {
   if (folha.altura < 2100 && !isLarguraFaixaPadrao(folha.largura)) {
     return 0;
   } else if (folha.altura < 2100 && isLarguraFaixaPadrao(folha.largura)) {
@@ -132,7 +157,7 @@ bool isLarguraFaixaPadrao(int largura) {
   }
 }
 
-String rastrearProdutoTiny(FolhaPortaHDF folha) {
+String rastrearProdutoTiny(PortaHDF folha) {
   if (folha.cor == CorHDF.branco && folha.desenho == Desenho.nenhum) {
     return "868957520";
   } else if (folha.cor == CorHDF.branco && folha.desenho != Desenho.nenhum) {
@@ -148,26 +173,4 @@ String rastrearProdutoTiny(FolhaPortaHDF folha) {
   } else {
     throw "ERRO AO ACHAR PRODUTO NO TINY";
   }
-}
-
-class Proposta {
-  List<Item> itens = [];
-  TabelaPreco tabelaPreco;
-
-  Proposta({required this.tabelaPreco});
-
-  Future<void> adicionarProduto(FolhaPortaHDF folha, int quantidade) async {
-    var produto = await tiny.fetchProduto(rastrearProdutoTiny(folha));
-    produto.descricaoComplementar = gerarDescricao(folha);
-    produto.preco = await precificar(folha, TabelaPreco.revenda);
-    Item item = Item(quantidade: quantidade, produto: produto);
-    itens.add(item);
-  }
-}
-
-class Item {
-  int quantidade;
-  tiny.Produto produto;
-
-  Item({required this.quantidade, required this.produto});
 }

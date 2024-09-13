@@ -48,7 +48,8 @@ enum EspessuraFolha {
 enum CorHDF {
   branco,
   mogno,
-  imbuia;
+  imbuia,
+  curupixa;
 
   String get cor {
     switch (this) {
@@ -58,6 +59,8 @@ enum CorHDF {
         return "MOGNO";
       case CorHDF.imbuia:
         return "IMBUIA";
+      case CorHDF.curupixa:
+        return "CURUPIXA";
     }
   }
 }
