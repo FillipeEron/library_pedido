@@ -9,7 +9,8 @@ void main(List<String> arguments) {
   int altura = 2100;
   TabelaPreco tabela = TabelaPreco.revenda;
   EspessuraFolha espessura = EspessuraFolha.e30;
-  Desenho desenho = Desenho.c01;
+  Desenho desenho = Desenho.nenhum;
+  bool pintura = true;
   double preco = 0;
 
   switch (tabela) {
@@ -31,6 +32,7 @@ void main(List<String> arguments) {
 
   preco += precoSobMedida(largura, altura);
   preco += precoDesenho(desenho);
+  preco += precoPintura(pintura, desenho);
   print("30X${largura}X$altura mm: $preco");
 }
 
@@ -168,13 +170,21 @@ double precoSobMedidaAltura(int altura) {
   } else if (altura > 2400 && altura <= 2500) {
     return 150;
   } else {
-    throw "ALTURA FORA DOS PADRÕES, CONSULTAR PRODUÇÃO";
+    throw FormatException("ALTURA FORA DOS PADRÕES, CONSULTAR PRODUÇÃO");
   }
 }
 
 double precoDesenho(Desenho desenho) {
   if (desenho != Desenho.nenhum) {
     return 5.0;
+  } else {
+    return 0;
+  }
+}
+
+double precoPintura(bool pintura, Desenho desenho) {
+  if (pintura && desenho != Desenho.nenhum) {
+    return 10;
   } else {
     return 0;
   }

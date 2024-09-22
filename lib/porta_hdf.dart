@@ -47,6 +47,32 @@ class PortaHDF {
       throw "ERRO AO IDENTIFICAR CODIGO DO PRODUTO";
     }
   }
+
+  double precoSobMedidaLargura() {
+    if (this.largura % 100 == 0 && this.largura >= 600) {
+      return 0;
+    } else {
+      return 60;
+    }
+  }
+
+  double precoSobMedidaAltura() {
+    if (this.altura < 2100) {
+      return 60;
+    } else if (this.altura == 2100) {
+      return 0;
+    } else if (this.altura > 2100 && altura <= 2200) {
+      return 60;
+    } else if (this.altura > 2200 && altura <= 2300) {
+      return 90;
+    } else if (this.altura > 2300 && altura <= 2400) {
+      return 120;
+    } else if (this.altura > 2400 && altura <= 2500) {
+      return 150;
+    } else {
+      throw "ALTURA FORA DOS PADRÕES, CONSULTAR PRODUÇÃO";
+    }
+  }
 }
 
 String gerarDescricao(PortaHDF porta) {
