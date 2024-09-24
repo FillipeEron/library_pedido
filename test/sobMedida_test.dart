@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:auxiliar_pedidos/enums.dart';
 import 'package:auxiliar_pedidos/porta_hdf.dart';
+import 'package:test/expect.dart';
 import 'package:test/test.dart';
 import 'package:auxiliar_pedidos/tiny.dart';
 
@@ -49,14 +52,38 @@ void main() {
       porta.altura = 2500;
       expect(porta.precoSobMedidaAltura(), 150);
     });
-
-    test("2501 MM", () {
+    test('2501 MM', () {
       porta.altura = 2501;
-      expect(porta.precoSobMedidaAltura(), isUnsupportedError);
+      expect(() => porta.precoSobMedidaAltura(), throwsException);
     });
-    /*test('expect: throwsA', () {
-      final result = (int value) => (value as dynamic).length;
-      expect(() => result(0), isException);
-    });*/
+  });
+
+  group("SOB MEDIDA", () {
+    var porta = PortaHDF(largura: 600, cor: CorHDF.branco);
+    test("APENAS ALTURA 2300", () {
+      porta.altura = 2300;
+      expect(
+        porta.precoSobMedida(),
+        90,
+      );
+    });
+
+    test("APENAS LARGURA 720", () {
+      porta.altura = 2100;
+      porta.largura = 720;
+      expect(
+        porta.precoSobMedida(),
+        60,
+      );
+    });
+
+    test("LARGURA E ALTURA", () {
+      porta.altura = 2300;
+      porta.largura = 720;
+      expect(
+        porta.precoSobMedida(),
+        90,
+      );
+    });
   });
 }

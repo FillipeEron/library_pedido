@@ -61,16 +61,50 @@ class PortaHDF {
       return 60;
     } else if (this.altura == 2100) {
       return 0;
-    } else if (this.altura > 2100 && altura <= 2200) {
+    } else if (this.altura > 2100 && this.altura <= 2200) {
       return 60;
-    } else if (this.altura > 2200 && altura <= 2300) {
+    } else if (this.altura > 2200 && this.altura <= 2300) {
       return 90;
-    } else if (this.altura > 2300 && altura <= 2400) {
+    } else if (this.altura > 2300 && this.altura <= 2400) {
       return 120;
-    } else if (this.altura > 2400 && altura <= 2500) {
+    } else if (this.altura > 2400 && this.altura <= 2500) {
       return 150;
     } else {
-      throw "ALTURA FORA DOS PADRÕES, CONSULTAR PRODUÇÃO";
+      throw Exception("ALTURA FORA DOS PADRÕES, CONSULTAR PRODUÇÃO");
+    }
+  }
+
+  double precoSobMedida() {
+    if (precoSobMedidaAltura() == 0) {
+      return precoSobMedidaLargura();
+    } else {
+      return precoSobMedidaAltura();
+    }
+  }
+
+  double precoBaseRevenda_30mm() {
+    if (this.largura < 600) {
+      return 145;
+    } else if (this.largura >= 600 && this.largura < 700) {
+      return 145;
+    } else if (this.largura >= 700 && this.largura < 800) {
+      return 145;
+    } else if (this.largura >= 800 && this.largura <= 820) {
+      return 145;
+    } else if (this.largura > 820 && this.largura <= 920) {
+      return 165;
+    } else if (this.largura > 920 && this.largura <= 1020) {
+      return 195;
+    } else if (this.largura > 1020 && this.largura <= 1120) {
+      return 225;
+    } else if (this.largura > 1120 && this.largura <= 1220) {
+      return 255;
+    } else if (this.largura > 1220 && this.largura <= 1320) {
+      return 275;
+    } else if (this.largura > 1320 && this.largura <= 1420) {
+      return 295;
+    } else {
+      throw "LARGURA EXCESSIVAMENTE GRANDE, CONSULTAR PRODUÇÃO";
     }
   }
 }

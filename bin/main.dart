@@ -170,7 +170,7 @@ double precoSobMedidaAltura(int altura) {
   } else if (altura > 2400 && altura <= 2500) {
     return 150;
   } else {
-    throw FormatException("ALTURA FORA DOS PADRÕES, CONSULTAR PRODUÇÃO");
+    throw Exception("ALTURA FORA DOS PADRÕES, CONSULTAR PRODUÇÃO");
   }
 }
 
