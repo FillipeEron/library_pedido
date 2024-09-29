@@ -9,32 +9,30 @@ import 'package:auxiliar_pedidos/tiny.dart';
 void main() async {
   //print(codigoTiny);
 
-  group("DESCRIÇÃO: ", () {
+  group("PRECIFICAÇÃO: ", () {
     var porta = PortaHDF(largura: 600, cor: CorHDF.branco);
 
     test("LISA", () {
-      expect(porta.descricao().contains("DESENHO"), isFalse);
+      expect(porta.precoDesenho(), 0);
     });
 
     test("DESENHADA SEM PINTURA", () {
       porta.desenho = Desenho.c01;
-      porta.pintura = false;
-      expect(porta.descricao().contains("DESENHO:"), isTrue);
-      expect(porta.descricao().contains("PINTURA"), isFalse);
+      expect(porta.precoDesenho(), 7.5);
     });
 
-    test("DESENHADA C/ PINTURA", () {
+    test("DESENHADA COM PINTURA", () {
       porta.desenho = Desenho.c02;
       porta.pintura = true;
-      expect(porta.descricao().contains("DESENHO:"), isTrue);
-      expect(porta.descricao().contains("PINTURA"), isTrue);
+      expect(porta.precoDesenho(), 7.5);
+      expect(porta.precoPintura(), 10);
     });
 
-    test("LISA C/ PINTURA", () {
+    test("SEM DESENHO COM PINTURA", () {
       porta.desenho = Desenho.nenhum;
       porta.pintura = true;
-      expect(porta.descricao().contains("DESENHO:"), isFalse);
-      expect(porta.descricao().contains("PINTURA"), isFalse);
+      expect(porta.precoDesenho(), 0);
+      expect(porta.precoPintura(), 0);
     });
   });
 }

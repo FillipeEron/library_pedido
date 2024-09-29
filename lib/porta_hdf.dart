@@ -26,7 +26,11 @@ class PortaHDF {
     if (this.desenho == Desenho.nenhum) {
       return "${this.espessuraFolha.espessura}X${this.largura}X${this.altura} MM;";
     } else {
-      return "${this.espessuraFolha.espessura}X${this.largura}X${this.altura} MM; DESENHO: ${this.desenho.codigo};";
+      if (this.pintura) {
+        return "${this.espessuraFolha.espessura}X${this.largura}X${this.altura} MM; DESENHO: ${this.desenho.codigo} C/ PINTURA;";
+      } else {
+        return "${this.espessuraFolha.espessura}X${this.largura}X${this.altura} MM; DESENHO: ${this.desenho.codigo}";
+      }
     }
   }
 
@@ -84,153 +88,161 @@ class PortaHDF {
 
   double precoBaseRevenda_30mm() {
     if (this.largura < 600) {
-      return 145;
+      return 150;
     } else if (this.largura >= 600 && this.largura < 700) {
-      return 145;
+      return 150;
     } else if (this.largura >= 700 && this.largura < 800) {
-      return 145;
+      return 150;
     } else if (this.largura >= 800 && this.largura <= 820) {
-      return 145;
+      return 150;
     } else if (this.largura > 820 && this.largura <= 920) {
-      return 165;
+      return 170;
     } else if (this.largura > 920 && this.largura <= 1020) {
-      return 195;
+      return 200;
     } else if (this.largura > 1020 && this.largura <= 1120) {
-      return 225;
+      return 230;
     } else if (this.largura > 1120 && this.largura <= 1220) {
-      return 255;
+      return 260;
     } else if (this.largura > 1220 && this.largura <= 1320) {
-      return 275;
+      return 280;
     } else if (this.largura > 1320 && this.largura <= 1420) {
-      return 295;
+      return 300;
     } else {
-      throw "LARGURA EXCESSIVAMENTE GRANDE, CONSULTAR PRODUÇÃO";
+      throw Exception("LARGURA EXCESSIVAMENTE GRANDE, CONSULTAR PRODUÇÃO");
     }
   }
-}
 
-String gerarDescricao(PortaHDF porta) {
-  if (porta.desenho == Desenho.nenhum) {
-    return "${porta.espessuraFolha.espessura}X${porta.largura}X${porta.altura} MM;";
-  } else {
-    return "${porta.espessuraFolha.espessura}X${porta.largura}X${porta.altura} MM; DESENHO: ${porta.desenho.codigo};";
+  double precoBaseRevenda_35mm() {
+    if (this.largura < 600) {
+      return 215;
+    } else if (this.largura >= 600 && this.largura < 700) {
+      return 215;
+    } else if (this.largura >= 700 && this.largura < 800) {
+      return 215;
+    } else if (this.largura >= 800 && this.largura <= 820) {
+      return 215;
+    } else if (this.largura > 820 && this.largura <= 920) {
+      return 245;
+    } else if (this.largura > 920 && this.largura <= 1020) {
+      return 285;
+    } else if (this.largura > 1020 && this.largura <= 1120) {
+      return 325;
+    } else if (this.largura > 1120 && this.largura <= 1220) {
+      return 365;
+    } else if (this.largura > 1220 && this.largura <= 1320) {
+      return 385;
+    } else if (this.largura > 1320 && this.largura <= 1420) {
+      return 405;
+    } else {
+      throw Exception("LARGURA EXCESSIVAMENTE GRANDE, CONSULTAR PRODUÇÃO");
+    }
   }
-}
 
-String chaveDBLargura(PortaHDF folha, TabelaPreco tabelaPreco) {
-  if (folha.largura == 600 || folha.largura == 700 || folha.largura == 800) {
-    return "${tabelaPreco.tabela}#HDF#${folha.espessuraFolha.espessura}X600/700/800#";
-  } else if (folha.largura <= 820) {
-    return "${tabelaPreco.tabela}#HDF#${folha.espessuraFolha.espessura}X600/700/800#SOBMEDIDA#";
-  } else if (folha.largura == 900) {
-    return "${tabelaPreco.tabela}#HDF#${folha.espessuraFolha.espessura}X900#";
-  } else if (folha.largura <= 920) {
-    return "${tabelaPreco.tabela}#HDF#${folha.espessuraFolha.espessura}X900#SOBMEDIDA#";
-  } else if (folha.largura == 1000) {
-    return "${tabelaPreco.tabela}#HDF#${folha.espessuraFolha.espessura}X1000#";
-  } else if (folha.largura <= 1020) {
-    return "${tabelaPreco.tabela}#HDF#${folha.espessuraFolha.espessura}X1000#SOBMEDIDA#";
-  } else if (folha.largura == 1100) {
-    return "${tabelaPreco.tabela}#HDF#${folha.espessuraFolha.espessura}X1100#";
-  } else if (folha.largura <= 1120) {
-    return "${tabelaPreco.tabela}#HDF#${folha.espessuraFolha.espessura}X1100#SOBMEDIDA#";
-  } else if (folha.largura == 1200) {
-    return "${tabelaPreco.tabela}#HDF#${folha.espessuraFolha.espessura}X1200#";
-  } else if (folha.largura <= 1220) {
-    return "${tabelaPreco.tabela}#HDF#${folha.espessuraFolha.espessura}X1200#SOBMEDIDA#";
-  } else {
-    throw "Faixa não encontrada";
+  double precoBaseFinal_30mm() {
+    if (this.largura < 600) {
+      return 220;
+    } else if (this.largura >= 600 && this.largura < 700) {
+      return 220;
+    } else if (this.largura >= 700 && this.largura < 800) {
+      return 220;
+    } else if (this.largura >= 800 && this.largura <= 820) {
+      return 220;
+    } else if (this.largura > 820 && this.largura <= 920) {
+      return 260;
+    } else if (this.largura > 920 && this.largura <= 1020) {
+      return 280;
+    } else if (this.largura > 1020 && this.largura <= 1120) {
+      return 310;
+    } else if (this.largura > 1120 && this.largura <= 1220) {
+      return 340;
+    } else if (this.largura > 1220 && this.largura <= 1320) {
+      return 360;
+    } else if (this.largura > 1320 && this.largura <= 1420) {
+      return 380;
+    } else {
+      throw Exception("LARGURA EXCESSIVAMENTE GRANDE, CONSULTAR PRODUÇÃO");
+    }
   }
-}
 
-Future<int> valorDBLargura(String chave) async {
-  var box = await Hive.openBox("PRECO", path: pathData);
-  return box.get(chave);
-}
-
-Future<int> precificar(PortaHDF folha, TabelaPreco tabelaPreco) async {
-  int preco = 0;
-  preco += await precificarLargura(folha, tabelaPreco);
-  preco += precificarAltura(folha);
-  preco += precificarPintura(folha.pintura);
-  preco += precificarDesenho(folha.desenho);
-
-  return preco;
-}
-
-int precificarDesenho(Desenho desenho) {
-  if (desenho == Desenho.nenhum) {
-    return 0;
-  } else {
-    return 5;
+  double precoBaseFinal_35mm() {
+    if (this.largura < 600) {
+      return 285;
+    } else if (this.largura >= 600 && this.largura < 700) {
+      return 285;
+    } else if (this.largura >= 700 && this.largura < 800) {
+      return 285;
+    } else if (this.largura >= 800 && this.largura <= 820) {
+      return 285;
+    } else if (this.largura > 820 && this.largura <= 920) {
+      return 385;
+    } else if (this.largura > 920 && this.largura <= 1020) {
+      return 485;
+    } else if (this.largura > 1020 && this.largura <= 1120) {
+      return 585;
+    } else if (this.largura > 1120 && this.largura <= 1220) {
+      return 685;
+    } else if (this.largura > 1220 && this.largura <= 1320) {
+      return 705;
+    } else if (this.largura > 1320 && this.largura <= 1420) {
+      return 725;
+    } else {
+      throw Exception("LARGURA EXCESSIVAMENTE GRANDE, CONSULTAR PRODUÇÃO");
+    }
   }
-}
 
-int precificarPintura(bool pintura) {
-  if (pintura) {
-    return 5;
-  } else {
-    return 0;
+  double precoDesenho() {
+    if (this.desenho != Desenho.nenhum) {
+      return 7.5;
+    } else {
+      return 0;
+    }
   }
-}
 
-Future<int> precificarLargura(PortaHDF folha, TabelaPreco tabelaPreco) async {
-  try {
-    String chaveDB = chaveDBLargura(folha, tabelaPreco);
-    return await valorDBLargura(chaveDB);
-  } catch (e) {
-    throw ("ERRO DE BUSCA CHAVE <-> VALOR : $e");
+  double precoPintura() {
+    if (this.pintura && this.desenho != Desenho.nenhum) {
+      return 10;
+    } else {
+      return 0;
+    }
   }
-}
 
-int precificarAltura(PortaHDF folha) {
-  if (folha.altura < 2100 && !isLarguraFaixaPadrao(folha.largura)) {
-    return 0;
-  } else if (folha.altura < 2100 && isLarguraFaixaPadrao(folha.largura)) {
-    return 60;
-  } else if (folha.altura == 2100) {
-    return 0;
-  } else if (folha.altura > 2100 && folha.altura < 2200) {
-    return 60;
-  } else if (folha.altura >= 2200 && folha.altura < 2300) {
-    return 90;
-  } else if (folha.altura >= 2300 && folha.altura < 2400) {
-    return 120;
-  } else if (folha.altura >= 2400 && folha.altura < 2500) {
-    return 150;
-  } else {
-    throw "ALTURA FOLHA ${folha.altura} NÃO PERTENCE A FAIXA DE ALTURA DE ANALISE";
+  double precoBaseRevenda() {
+    double preco = 0;
+    if (espessuraFolha == EspessuraFolha.e30) {
+      preco += precoBaseRevenda_30mm();
+    } else if (espessuraFolha == EspessuraFolha.e35) {
+      preco += precoBaseRevenda_35mm();
+    } else {
+      throw Exception(
+          "ESPESSURA DA FOLHA DE ${this.espessuraFolha} MM NÃO CONDIZ COM A TABELA DE PREÇO.");
+    }
+    return preco;
   }
-}
 
-bool isLarguraFaixaPadrao(int largura) {
-  if (largura == 600 ||
-      largura == 700 ||
-      largura == 800 ||
-      largura == 900 ||
-      largura == 1000 ||
-      largura == 1100 ||
-      largura == 1200) {
-    return true;
-  } else {
-    return false;
+  double precoBaseFinal() {
+    double preco = 0;
+    if (espessuraFolha == EspessuraFolha.e30) {
+      preco += precoBaseFinal_30mm();
+    } else if (espessuraFolha == EspessuraFolha.e35) {
+      preco += precoBaseFinal_35mm();
+    } else {
+      throw Exception(
+          "ESPESSURA DA FOLHA DE ${this.espessuraFolha} MM NÃO CONDIZ COM A TABELA DE PREÇO.");
+    }
+    return preco;
   }
-}
 
-String rastrearProdutoTiny(PortaHDF folha) {
-  if (folha.cor == CorHDF.branco && folha.desenho == Desenho.nenhum) {
-    return "868957520";
-  } else if (folha.cor == CorHDF.branco && folha.desenho != Desenho.nenhum) {
-    return "868957602";
-  } else if (folha.cor == CorHDF.mogno && folha.desenho == Desenho.nenhum) {
-    return "868957907";
-  } else if (folha.cor == CorHDF.mogno && folha.desenho != Desenho.nenhum) {
-    return "868958081";
-  } else if (folha.cor == CorHDF.imbuia && folha.desenho == Desenho.nenhum) {
-    return "868958144";
-  } else if (folha.cor == CorHDF.imbuia && folha.desenho != Desenho.nenhum) {
-    return "868958375";
-  } else {
-    throw "ERRO AO ACHAR PRODUTO NO TINY";
+  double precificar(TabelaPreco tabela) {
+    double preco = 0;
+    switch (tabela) {
+      case TabelaPreco.revenda:
+        preco += precoBaseRevenda();
+      case TabelaPreco.clinteFinal:
+        preco += precoBaseFinal();
+    }
+    preco += precoSobMedida();
+    preco += precoDesenho();
+    preco += precoPintura();
+    return preco;
   }
 }
