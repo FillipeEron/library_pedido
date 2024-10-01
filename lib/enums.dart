@@ -15,9 +15,9 @@ enum TabelaPreco {
   String get tabela {
     switch (this) {
       case TabelaPreco.revenda:
-        return "REVENDA";
+        return "Revenda";
       case TabelaPreco.clinteFinal:
-        return "FINAL";
+        return "Padrão";
     }
   }
 }
@@ -147,6 +147,23 @@ enum Desenho {
         return "R17";
       case Desenho.r18:
         return "R18";
+    }
+  }
+}
+
+enum VENDEDOR {
+  naldo,
+  fillipe,
+  cleberson;
+
+  String get nome {
+    switch (this) {
+      case VENDEDOR.naldo:
+        return "NALDO MATOS";
+      case VENDEDOR.fillipe:
+        return "FILLIPE  ERON FORTES MATOS";
+      case VENDEDOR.cleberson:
+        return "CLEBERSON";
     }
   }
 }

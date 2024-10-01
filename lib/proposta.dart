@@ -1,33 +1,55 @@
 import 'package:auxiliar_pedidos/enums.dart';
+import 'package:auxiliar_pedidos/excel.dart';
 import 'package:auxiliar_pedidos/utils.dart';
-import 'package:auxiliar_pedidos/porta_hdf.dart' as pt;
+import 'package:auxiliar_pedidos/porta_hdf.dart';
 import 'package:auxiliar_pedidos/tiny.dart' as tiny;
 
 class Proposta {
-  List<Item> itens = [];
+  var propostaExcel = PropostaExcel();
+
   TabelaPreco tabelaPreco;
+  String desconto;
+  String frete;
+  String validade;
+  String prazoEntrega;
+  String data;
+  String? observacao;
+  VENDEDOR vendedor;
 
-  Proposta({required this.tabelaPreco});
+  Proposta({
+    required this.tabelaPreco,
+    this.desconto = "0",
+    this.frete = "0",
+    this.validade = "10",
+    this.prazoEntrega = "15 A 20 DIAS UTEIS",
+    required this.data,
+    required this.vendedor,
+  });
 
-  Future<void> adicionarProduto(pt.PortaHDF folha, int quantidade) async {
-    var produto = await tiny.fetchProduto(pt.rastrearProdutoTiny(folha));
-    produto.descricaoComplementar = pt.gerarDescricao(folha);
-    produto.preco = await pt.precificar(folha, TabelaPreco.revenda);
-    Item item = Item(quantidade: quantidade, produto: produto);
-    itens.add(item);
+  Future<void> adicionarProduto(PortaHDF porta, String quantidade) async {
+    var produto = await tiny.fetchProduto(porta.codigoTiny());
+    this.propostaExcel.addProduto(
+          idProduto: produto.codigo,
+          descricao: produto.nome,
+          quantidade: quantidade,
+          valorUnitario: porta.precificar(tabelaPreco).toString(),
+          descricaoComplementar: porta.descricao(),
+        );
   }
 
-  void printResumo() {
-    itens.forEach((element) {
-      print(
-          "${element.produto.id} | ${element.produto.nome} | ${element.produto.preco} | ${element.quantidade} | ${element.produto.descricaoComplementar}");
-    });
+  void salvar(PortaHDF porta) {
+    this.propostaExcel.camposGerais(
+          listaPreco: this.tabelaPreco.tabela,
+          desconto: this.desconto,
+          frete: this.frete,
+          validade: this.validade,
+          prazoEntrega: this.prazoEntrega,
+          data: this.data,
+          vendedor: this.vendedor.nome,
+        );
+
+    propostaExcel.addObservacao(
+        "> PRODUTO DE USO INTERNO, NÃO PODENDO ENTRAR EM CONTATO COM ÁGUA;");
+    propostaExcel.save();
   }
-}
-
-class Item {
-  int quantidade;
-  tiny.Produto produto;
-
-  Item({required this.quantidade, required this.produto});
 }
