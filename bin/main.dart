@@ -15,43 +15,24 @@ void main(List<String> arguments) async {
       pintura: true,
       espessuraFolha: EspessuraFolha.e30);
 
+  var porta2 = PortaHDF(
+      largura: 700,
+      altura: 2100,
+      cor: CorHDF.mogno,
+      espessuraFolha: EspessuraFolha.e35,
+      perfilU: true);
+
   var proposta = Proposta(
       tabelaPreco: TabelaPreco.revenda,
       data: dataAtual(),
       vendedor: VENDEDOR.fillipe);
 
   await proposta.adicionarProduto(porta, "2");
+  await proposta.adicionarProduto(porta2, "1");
 
-  proposta.salvar(porta);
-
-  /*var propostaExcel = PropostaExcel();
-  propostaExcel.camposGerais(
-    nomeContato: "BOT",
-    listaPreco: TabelaPreco.revenda.tabela,
-    desconto: "10",
-    frete: "10",
-    validade: "5",
-    prazoEntrega: "10 A 15 DIAS UTEIS",
-    data: "12/09/2024",
-    observacoes: "> PROPOSTA DE TESTE",
-    vendedor: VENDEDOR.fillipe.nome,
-  );
-
-  var porta = PortaHDF(
-      largura: 710,
-      cor: CorHDF.branco,
-      desenho: Desenho.c01,
-      pintura: true,
-      espessuraFolha: EspessuraFolha.e35);
-
-  var produto = await tiny.fetchProduto(porta.codigoTiny());
-
-  propostaExcel.addProduto(
-      idProduto: produto.codigo,
-      descricao: produto.nome,
-      quantidade: "2",
-      valorUnitario: porta.precificar(TabelaPreco.revenda).toString(),
-      descricaoComplementar: porta.descricao());
-
-  propostaExcel.save();*/
+  proposta.salvar();
 }
+
+
+
+// https://medium.com/@aigbekelvin/how-to-use-mockito-in-flutter-9e67c5a09bb1

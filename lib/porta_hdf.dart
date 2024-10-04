@@ -6,12 +6,14 @@ import 'package:auxiliar_pedidos/tiny.dart' as tiny;
 const String pathData = "../data/data_preco/data";
 
 class PortaHDF {
-  int largura;
-  int altura;
+  List<String> descricoes = [];
+  double largura;
+  double altura;
   EspessuraFolha espessuraFolha;
   CorHDF cor;
   Desenho desenho;
   bool pintura;
+  bool perfilU;
 
   PortaHDF({
     required this.largura,
@@ -20,17 +22,37 @@ class PortaHDF {
     required this.cor,
     this.desenho = Desenho.nenhum,
     this.pintura = false,
+    this.perfilU = false,
   });
 
   String descricao() {
+    descricoes.add(descricaoDimensao());
+    descricoes.add(descricaoDesenho());
+    descricoes.add(descricaoPerfilU());
+    return this.descricoes.join();
+  }
+
+  String descricaoDimensao() {
+    return "${this.espessuraFolha.espessura}X${this.largura.toInt()}X${this.altura.toInt()} MM; ";
+  }
+
+  String descricaoDesenho() {
     if (this.desenho == Desenho.nenhum) {
-      return "${this.espessuraFolha.espessura}X${this.largura}X${this.altura} MM;";
+      return "";
     } else {
       if (this.pintura) {
-        return "${this.espessuraFolha.espessura}X${this.largura}X${this.altura} MM; DESENHO: ${this.desenho.codigo} C/ PINTURA;";
+        return "DESENHO: ${this.desenho.codigo} C/ PINTURA; ";
       } else {
-        return "${this.espessuraFolha.espessura}X${this.largura}X${this.altura} MM; DESENHO: ${this.desenho.codigo}";
+        return "DESENHO: ${this.desenho.codigo}; ";
       }
+    }
+  }
+
+  String descricaoPerfilU() {
+    if (this.perfilU) {
+      return "PERFIL U DE ALUMINIO; ";
+    } else {
+      return "";
     }
   }
 
@@ -49,6 +71,22 @@ class PortaHDF {
       return "868958375";
     } else {
       throw "ERRO AO IDENTIFICAR CODIGO DO PRODUTO";
+    }
+  }
+
+  double precificarPerfilU() {
+    double valorMetroLinear = 20;
+    if (this.perfilU) {
+      if (this.espessuraFolha == EspessuraFolha.e35) {
+        double resultado = ((converterMetro(this.largura) * 2) +
+                (converterMetro(this.altura) * 2)) *
+            valorMetroLinear;
+        return arrendondamento_5(resultado);
+      } else {
+        throw Exception("PERFIL U É OBRIGATIRIO ESPESSURA DA FOLHA SER 35 MM");
+      }
+    } else {
+      return 0;
     }
   }
 
@@ -243,6 +281,7 @@ class PortaHDF {
     preco += precoSobMedida();
     preco += precoDesenho();
     preco += precoPintura();
+    preco += precificarPerfilU();
     return preco;
   }
 }

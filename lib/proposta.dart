@@ -6,7 +6,8 @@ import 'package:auxiliar_pedidos/tiny.dart' as tiny;
 
 class Proposta {
   var propostaExcel = PropostaExcel();
-
+  static const nomeContato = "BOT";
+  static const numeroProposta = "1000";
   TabelaPreco tabelaPreco;
   String desconto;
   String frete;
@@ -37,8 +38,10 @@ class Proposta {
         );
   }
 
-  void salvar(PortaHDF porta) {
+  void salvar() {
     this.propostaExcel.camposGerais(
+          numeroProposta: numeroProposta,
+          nomeContato: nomeContato,
           listaPreco: this.tabelaPreco.tabela,
           desconto: this.desconto,
           frete: this.frete,

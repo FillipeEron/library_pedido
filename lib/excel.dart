@@ -8,7 +8,7 @@ class PropostaExcel {
   static const int firstLine = 1;
   var campoGerais = Map<String, String>();
   var listaProduto = List.empty(growable: true);
-  var cellPosition = {
+  static const cellPosition = {
     "id": 0,
     "numeroProposta": 1,
     "data": 2,
@@ -88,6 +88,11 @@ class PropostaExcel {
     var excel = Excel.decodeBytes(bytes);
     Sheet sheetObject = excel["Propostas Comerciais"];
 
+    /*campoGerais.forEach((key, value) {
+      var cell = sheetObject.cell(CellIndex.indexByColumnRow(
+          columnIndex: cellPosition[key]!, rowIndex: firstLine));
+      cell.value = TextCellValue(value);
+    });*/
     for (int countLine = 0; countLine < listaProduto.length; countLine++) {
       campoGerais.forEach((key, value) {
         var cell = sheetObject.cell(CellIndex.indexByColumnRow(
