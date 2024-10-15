@@ -151,19 +151,26 @@ enum Desenho {
   }
 }
 
-enum VENDEDOR {
+enum Vendedor {
   naldo,
   fillipe,
   cleberson;
 
   String get nome {
     switch (this) {
-      case VENDEDOR.naldo:
+      case Vendedor.naldo:
         return "NALDO MATOS";
-      case VENDEDOR.fillipe:
+      case Vendedor.fillipe:
         return "FILLIPE  ERON FORTES MATOS";
-      case VENDEDOR.cleberson:
+      case Vendedor.cleberson:
         return "CLEBERSON";
     }
   }
+}
+
+enum Furacao {
+  nenhum,
+  frontal,
+  broca40,
+  broca55;
 }

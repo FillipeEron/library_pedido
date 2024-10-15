@@ -6,6 +6,11 @@ import 'package:test/test.dart';
 void main() {
   group("PREÇO BASE", () {
     var porta = PortaHDF(largura: 800, cor: CorHDF.branco);
+    setUp(() {
+      porta.largura = 800;
+      porta.espessuraFolha = EspessuraFolha.e30;
+      porta.acustica = false;
+    });
     test("30 MM", () {
       expect(porta.precoBaseRevenda(), 150);
       expect(porta.precoBaseFinal(), 220);
@@ -16,6 +21,22 @@ void main() {
       expect(porta.precoBaseRevenda(), 215);
       expect(porta.precoBaseFinal(), 285);
     });
+
+    test("45 MM ACUSTICA", () {
+      porta.espessuraFolha = EspessuraFolha.e45;
+      porta.acustica = true;
+      porta.largura = 800;
+      expect(porta.precoBaseRevenda(), 365);
+      expect(porta.precoBaseFinal(), 435);
+    });
+
+    test("35 MM ACUSTICA", () {
+      porta.espessuraFolha = EspessuraFolha.e45;
+      porta.acustica = false;
+      porta.largura = 800;
+      expect(porta.precoBaseRevenda(), 365);
+      expect(porta.precoBaseFinal(), 435);
+    }, skip: "implementar ainda");
 
     test("32 MM", () {
       porta.espessuraFolha = EspessuraFolha.e32;

@@ -14,6 +14,8 @@ class PortaHDF {
   Desenho desenho;
   bool pintura;
   bool perfilU;
+  bool acustica;
+  Furacao furacao;
 
   PortaHDF({
     required this.largura,
@@ -21,15 +23,31 @@ class PortaHDF {
     this.espessuraFolha = EspessuraFolha.e30,
     required this.cor,
     this.desenho = Desenho.nenhum,
+    this.furacao = Furacao.nenhum,
     this.pintura = false,
     this.perfilU = false,
+    this.acustica = false,
   });
 
   String descricao() {
     descricoes.add(descricaoDimensao());
     descricoes.add(descricaoDesenho());
+    descricoes.add(descricaoFuracao());
     descricoes.add(descricaoPerfilU());
     return this.descricoes.join();
+  }
+
+  String descricaoFuracao() {
+    switch (this.furacao) {
+      case Furacao.nenhum:
+        return "";
+      case Furacao.frontal:
+        return "FURAÇÃO FRONTAL; ";
+      case Furacao.broca40:
+        return "FURAÇÃO BROCA 40; ";
+      case Furacao.broca55:
+        return "FURAÇÃO BROCA 55;";
+    }
   }
 
   String descricaoDimensao() {
@@ -74,6 +92,22 @@ class PortaHDF {
     }
   }
 
+  double precificarAcustica() {
+    if (acustica == false) {
+      return 0;
+    } else {
+      if (this.espessuraFolha == EspessuraFolha.e45) {
+        if (this.largura <= 820) {
+          return 150;
+        } else {
+          return 250;
+        }
+      } else {
+        throw Exception("ESPESSURA DA FOLHA PRECISA SER DE 45 MM");
+      }
+    }
+  }
+
   double precificarPerfilU() {
     double valorMetroLinear = 20;
     if (this.perfilU) {
@@ -87,6 +121,20 @@ class PortaHDF {
       }
     } else {
       return 0;
+    }
+  }
+
+  // VERIFICAR OBRIGATORIEDADE DA FURAÇÃO BROCA 40 E 55
+  double precificarFuracao() {
+    switch (this.furacao) {
+      case Furacao.nenhum:
+        return 0;
+      case Furacao.frontal:
+        return 10;
+      case Furacao.broca40:
+        return 15;
+      case Furacao.broca55:
+        return 20;
     }
   }
 
@@ -250,6 +298,9 @@ class PortaHDF {
       preco += precoBaseRevenda_30mm();
     } else if (espessuraFolha == EspessuraFolha.e35) {
       preco += precoBaseRevenda_35mm();
+    } else if (espessuraFolha == EspessuraFolha.e45 && this.acustica) {
+      preco += precoBaseRevenda_35mm();
+      preco += precificarAcustica();
     } else {
       throw Exception(
           "ESPESSURA DA FOLHA DE ${this.espessuraFolha} MM NÃO CONDIZ COM A TABELA DE PREÇO.");
@@ -263,6 +314,9 @@ class PortaHDF {
       preco += precoBaseFinal_30mm();
     } else if (espessuraFolha == EspessuraFolha.e35) {
       preco += precoBaseFinal_35mm();
+    } else if (espessuraFolha == EspessuraFolha.e45 && this.acustica) {
+      preco += precoBaseFinal_35mm();
+      preco += precificarAcustica();
     } else {
       throw Exception(
           "ESPESSURA DA FOLHA DE ${this.espessuraFolha} MM NÃO CONDIZ COM A TABELA DE PREÇO.");
@@ -282,6 +336,7 @@ class PortaHDF {
     preco += precoDesenho();
     preco += precoPintura();
     preco += precificarPerfilU();
+    preco += precificarFuracao();
     return preco;
   }
 }

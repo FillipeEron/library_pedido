@@ -15,7 +15,7 @@ class Proposta {
   String prazoEntrega;
   String data;
   String? observacao;
-  VENDEDOR vendedor;
+  Vendedor vendedor;
 
   Proposta({
     required this.tabelaPreco,

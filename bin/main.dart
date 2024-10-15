@@ -25,7 +25,7 @@ void main(List<String> arguments) async {
   var proposta = Proposta(
       tabelaPreco: TabelaPreco.revenda,
       data: dataAtual(),
-      vendedor: VENDEDOR.fillipe);
+      vendedor: Vendedor.fillipe);
 
   await proposta.adicionarProduto(porta, "2");
   await proposta.adicionarProduto(porta2, "1");
