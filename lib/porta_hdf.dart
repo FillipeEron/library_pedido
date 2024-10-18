@@ -34,6 +34,7 @@ class PortaHDF {
     descricoes.add(descricaoDesenho());
     descricoes.add(descricaoFuracao());
     descricoes.add(descricaoPerfilU());
+    descricoes.add(descricaoAcustica());
     return this.descricoes.join();
   }
 
@@ -69,6 +70,14 @@ class PortaHDF {
   String descricaoPerfilU() {
     if (this.perfilU) {
       return "PERFIL U DE ALUMINIO; ";
+    } else {
+      return "";
+    }
+  }
+
+  String descricaoAcustica() {
+    if (this.acustica) {
+      return "ESTRUTURA ACUSTICA C/ LÂ DE ROCHA";
     } else {
       return "";
     }
@@ -296,32 +305,28 @@ class PortaHDF {
     double preco = 0;
     if (espessuraFolha == EspessuraFolha.e30) {
       preco += precoBaseRevenda_30mm();
+      return preco;
     } else if (espessuraFolha == EspessuraFolha.e35) {
       preco += precoBaseRevenda_35mm();
-    } else if (espessuraFolha == EspessuraFolha.e45 && this.acustica) {
-      preco += precoBaseRevenda_35mm();
-      preco += precificarAcustica();
+      return preco;
     } else {
       throw Exception(
           "ESPESSURA DA FOLHA DE ${this.espessuraFolha} MM NÃO CONDIZ COM A TABELA DE PREÇO.");
     }
-    return preco;
   }
 
   double precoBaseFinal() {
     double preco = 0;
     if (espessuraFolha == EspessuraFolha.e30) {
       preco += precoBaseFinal_30mm();
+      return preco;
     } else if (espessuraFolha == EspessuraFolha.e35) {
       preco += precoBaseFinal_35mm();
-    } else if (espessuraFolha == EspessuraFolha.e45 && this.acustica) {
-      preco += precoBaseFinal_35mm();
-      preco += precificarAcustica();
+      return preco;
     } else {
       throw Exception(
           "ESPESSURA DA FOLHA DE ${this.espessuraFolha} MM NÃO CONDIZ COM A TABELA DE PREÇO.");
     }
-    return preco;
   }
 
   double precificar(TabelaPreco tabela) {
@@ -337,6 +342,7 @@ class PortaHDF {
     preco += precoPintura();
     preco += precificarPerfilU();
     preco += precificarFuracao();
+    preco += precificarAcustica();
     return preco;
   }
 }

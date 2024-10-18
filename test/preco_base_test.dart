@@ -22,21 +22,27 @@ void main() {
       expect(porta.precoBaseFinal(), 285);
     });
 
-    test("45 MM ACUSTICA", () {
+    test("45 MM ACUSTICA 800 MM LARGURA", () {
       porta.espessuraFolha = EspessuraFolha.e45;
       porta.acustica = true;
       porta.largura = 800;
-      expect(porta.precoBaseRevenda(), 365);
-      expect(porta.precoBaseFinal(), 435);
+      expect(porta.precificarAcustica(), 150);
+      //expect(porta.precoBaseFinal(), 435);
+    });
+
+    test("45 MM ACUSTICA 900 MM LARGURA", () {
+      porta.espessuraFolha = EspessuraFolha.e45;
+      porta.acustica = true;
+      porta.largura = 900;
+      expect(porta.precificarAcustica(), 250);
     });
 
     test("35 MM ACUSTICA", () {
-      porta.espessuraFolha = EspessuraFolha.e45;
-      porta.acustica = false;
+      porta.espessuraFolha = EspessuraFolha.e35;
+      porta.acustica = true;
       porta.largura = 800;
-      expect(porta.precoBaseRevenda(), 365);
-      expect(porta.precoBaseFinal(), 435);
-    }, skip: "implementar ainda");
+      expect(() => porta.precificarAcustica(), throwsException);
+    });
 
     test("32 MM", () {
       porta.espessuraFolha = EspessuraFolha.e32;

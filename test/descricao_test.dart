@@ -19,6 +19,8 @@ void main() async {
       porta.pintura = false;
       porta.perfilU = false;
       porta.furacao = Furacao.nenhum;
+      porta.acustica = false;
+      porta.espessuraFolha = EspessuraFolha.e30;
     });
 
     test("DIMENSÃO", () {
@@ -78,6 +80,11 @@ void main() async {
     test("C/ FURAÇÃO FRONTAL BROCA 55", () {
       porta.furacao = Furacao.broca55;
       expect(porta.descricaoFuracao().contains("FURAÇÃO BROCA 55;"), isTrue);
+    });
+
+    test("C/ ESTRUTARA ACUSTICA", () {
+      porta.acustica = true;
+      expect(porta.descricaoAcustica(), "ESTRUTURA ACUSTICA C/ LÂ DE ROCHA");
     });
   });
 }
