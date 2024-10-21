@@ -16,6 +16,7 @@ class PortaHDF {
   bool perfilU;
   bool acustica;
   Furacao furacao;
+  bool mantaChumbo;
 
   PortaHDF({
     required this.largura,
@@ -27,6 +28,7 @@ class PortaHDF {
     this.pintura = false,
     this.perfilU = false,
     this.acustica = false,
+    this.mantaChumbo = false,
   });
 
   String descricao() {
@@ -35,6 +37,7 @@ class PortaHDF {
     descricoes.add(descricaoFuracao());
     descricoes.add(descricaoPerfilU());
     descricoes.add(descricaoAcustica());
+    descricoes.add(descricaoMantaChumbo());
     return this.descricoes.join();
   }
 
@@ -53,6 +56,14 @@ class PortaHDF {
 
   String descricaoDimensao() {
     return "${this.espessuraFolha.espessura}X${this.largura.toInt()}X${this.altura.toInt()} MM; ";
+  }
+
+  String descricaoMantaChumbo() {
+    if (this.mantaChumbo) {
+      return "MANTA DE CHUMBO 1 MM ESPESSURA; ";
+    } else {
+      return "";
+    }
   }
 
   String descricaoDesenho() {
@@ -77,7 +88,7 @@ class PortaHDF {
 
   String descricaoAcustica() {
     if (this.acustica) {
-      return "ESTRUTURA ACUSTICA C/ LÂ DE ROCHA";
+      return "ESTRUTURA ACUSTICA C/ LÂ DE ROCHA; ";
     } else {
       return "";
     }
@@ -98,6 +109,37 @@ class PortaHDF {
       return "868958375";
     } else {
       throw "ERRO AO IDENTIFICAR CODIGO DO PRODUTO";
+    }
+  }
+
+  double precificarMantaChumbo() {
+    if (this.mantaChumbo &&
+        this.espessuraFolha != EspessuraFolha.e30 &&
+        this.espessuraFolha != EspessuraFolha.e32) {
+      if (this.largura <= 500) {
+        return 1056.00 + (1056.00 * (85 / 100));
+      } else if (this.largura > 500 && this.largura <= 600) {
+        return 1267.20 + (1267.20 * (85 / 100));
+      } else if (this.largura > 600 && this.largura <= 700) {
+        return 1408.00 + (1408.00 * (85 / 100));
+      } else if (this.largura > 700 && this.largura <= 800) {
+        return 1619.20 + (1619.20 * (85 / 100));
+      } else if (this.largura > 800 && this.largura <= 900) {
+        return 1760.00 + (1760.00 * (85 / 100));
+      } else if (this.largura > 900 && this.largura <= 1000) {
+        return 2041.60 + (2041.60 * (85 / 100));
+      } else if (this.largura > 1000 && this.largura <= 1100) {
+        return 2041.60 + (2041.60 * (85 / 100));
+      } else if (this.largura > 1100 && this.largura <= 1200) {
+        return 2323.20 + (2323.20 * (85 / 100));
+      } else if (this.largura > 1200 && this.largura <= 1300) {
+        return 2604.80 + (2604.80 * (85 / 100));
+      } else {
+        throw Exception(
+            "LARGURA DA PORTA EXCEDEU 13OO MM PARA A CAPACIDADE DA MANTA DE CHUMBO");
+      }
+    } else {
+      return 0;
     }
   }
 
@@ -343,6 +385,7 @@ class PortaHDF {
     preco += precificarPerfilU();
     preco += precificarFuracao();
     preco += precificarAcustica();
+    preco += precificarMantaChumbo();
     return preco;
   }
 }

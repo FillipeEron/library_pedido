@@ -19,6 +19,7 @@ void main() async {
       porta.espessuraFolha = EspessuraFolha.e30;
       porta.furacao = Furacao.nenhum;
       porta.acustica = false;
+      porta.mantaChumbo = false;
     });
 
     test("LISA", () {
@@ -105,6 +106,107 @@ void main() async {
       porta.espessuraFolha = EspessuraFolha.e35;
       porta.largura = 900;
       expect(() => porta.precificarAcustica(), throwsException);
+    });
+  });
+
+  group("MANTA DE CHUMBO", () {
+    PortaHDF porta = PortaHDF(
+        largura: 400,
+        cor: CorHDF.branco,
+        mantaChumbo: true,
+        espessuraFolha: EspessuraFolha.e35);
+    test("LARGURA 400", () {
+      porta.largura = 400;
+      expect(porta.precificarMantaChumbo(), 1953.60);
+    });
+
+    test("LARGURA 500", () {
+      porta.largura = 500;
+      expect(porta.precificarMantaChumbo(), 1953.60);
+    });
+
+    test("LARGURA 501", () {
+      porta.largura = 501;
+      expect(porta.precificarMantaChumbo(), 2344.32);
+    });
+    test("LARGURA 600", () {
+      porta.largura = 600;
+      expect(porta.precificarMantaChumbo(), 2344.32);
+    });
+
+    test("LARGURA 601", () {
+      porta.largura = 601;
+      expect(porta.precificarMantaChumbo(), 2604.8);
+    });
+
+    test("LARGURA 700", () {
+      porta.largura = 700;
+      expect(porta.precificarMantaChumbo(), 2604.8);
+    });
+
+    test("LARGURA 701", () {
+      porta.largura = 701;
+      expect(porta.precificarMantaChumbo(), 2995.52);
+    });
+
+    test("LARGURA 800", () {
+      porta.largura = 800;
+      expect(porta.precificarMantaChumbo(), 2995.52);
+    });
+
+    test("LARGURA 801", () {
+      porta.largura = 801;
+      expect(porta.precificarMantaChumbo(), 3256.00);
+    });
+
+    test("LARGURA 900", () {
+      porta.largura = 900;
+      expect(porta.precificarMantaChumbo(), 3256.00);
+    });
+
+    test("LARGURA 901", () {
+      porta.largura = 901;
+      expect(porta.precificarMantaChumbo(), 3776.96);
+    });
+
+    test("LARGURA 1000", () {
+      porta.largura = 1000;
+      expect(porta.precificarMantaChumbo(), 3776.96);
+    });
+
+    test("LARGURA 1001", () {
+      porta.largura = 1001;
+      expect(porta.precificarMantaChumbo(), 3776.96);
+    });
+
+    test("LARGURA 1100", () {
+      porta.largura = 1100;
+      expect(porta.precificarMantaChumbo(), 3776.96);
+    });
+
+    test("LARGURA 1101", () {
+      porta.largura = 1101;
+      expect(porta.precificarMantaChumbo(), 4297.92);
+    });
+
+    test("LARGURA 1200", () {
+      porta.largura = 1200;
+      expect(porta.precificarMantaChumbo(), 4297.92);
+    });
+
+    test("LARGURA 1201", () {
+      porta.largura = 1201;
+      expect(porta.precificarMantaChumbo(), 4818.88);
+    });
+
+    test("LARGURA 1300", () {
+      porta.largura = 1300;
+      expect(porta.precificarMantaChumbo(), 4818.88);
+    });
+
+    test("LARGURA 1301", () {
+      porta.largura = 1301;
+      expect(() => porta.precificarMantaChumbo(), throwsException);
     });
   });
 }

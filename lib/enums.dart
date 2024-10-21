@@ -174,3 +174,13 @@ enum Furacao {
   broca40,
   broca55;
 }
+
+enum Moldura {
+  madeira,
+  aluminio;
+}
+
+enum EspessuraVidro {
+  e4,
+  e6;
+}

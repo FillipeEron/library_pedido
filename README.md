@@ -4,8 +4,8 @@ in `lib/`, and example unit test in `test/`.
 # PORTA HDF
 - PERFIL U (OK);
 - VISOR;
-- ACUSTICA; 
+- ACUSTICA (OK); 
 - FURAÇÃO (OK);
 - DESENHO (OK);
 - PINTURA (OK);
-- MANTA DE CHUMBO;
+- MANTA DE CHUMBO (OK);

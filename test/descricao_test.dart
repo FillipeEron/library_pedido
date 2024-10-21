@@ -21,6 +21,7 @@ void main() async {
       porta.furacao = Furacao.nenhum;
       porta.acustica = false;
       porta.espessuraFolha = EspessuraFolha.e30;
+      porta.mantaChumbo = true;
     });
 
     test("DIMENSÃO", () {
@@ -84,7 +85,22 @@ void main() async {
 
     test("C/ ESTRUTARA ACUSTICA", () {
       porta.acustica = true;
-      expect(porta.descricaoAcustica(), "ESTRUTURA ACUSTICA C/ LÂ DE ROCHA");
+      expect(porta.descricaoAcustica(), "ESTRUTURA ACUSTICA C/ LÂ DE ROCHA; ");
+    });
+
+    test("SEM ESTRUTARA ACUSTICA", () {
+      porta.acustica = false;
+      expect(porta.descricaoAcustica(), "");
+    });
+
+    test("MANTA DE CHUMBO", () {
+      porta.mantaChumbo = true;
+      expect(porta.descricaoMantaChumbo(), "MANTA DE CHUMBO 1 MM ESPESSURA; ");
+    });
+
+    test("SEM MANTA DE CHUMBO", () {
+      porta.mantaChumbo = false;
+      expect(porta.descricaoMantaChumbo(), "");
     });
   });
 }
