@@ -8,24 +8,24 @@ import 'package:auxiliar_pedidos/proposta.dart';
 import 'package:auxiliar_pedidos/utils.dart';
 
 void main(List<String> arguments) async {
-  var porta = PortaHDF(
+  /*var porta = PortaHDF(
       largura: 601,
       cor: CorHDF.branco,
       desenho: Desenho.c01,
       pintura: true,
       mantaChumbo: true,
-      espessuraFolha: EspessuraFolha.e30);
+      espessuraFolha: EspessuraFolha.e30);*/
 
   var visor = Visor(
       moldura: Moldura.madeira,
       espessura: EspessuraVidro.e4,
-      largura: 450,
-      altura: 450);
+      largura: 400,
+      altura: 400);
 
   //print(visor.precificar());
-  print(visor.descricao());
-  //print(visor.precificarMoldura());
-  print(visor.precificarVidro());
+  //print(visor.descricao());
+  print(visor.precificarMoldura());
+  //print(visor.precificarVidro());
 
   /*var porta2 = PortaHDF(
       largura: 700,
@@ -89,10 +89,11 @@ class Visor {
   }
 
   double precificarVidro() {
-    double largura = converterMetro(this.largura);
-    double altura = converterMetro(this.altura);
+    double adicionalLargura = 50;
+    double largura = converterMetro(this.largura + adicionalLargura);
+    double altura = converterMetro(this.altura + adicionalLargura);
     largura = (arrendondamento_5(largura * 100) / 100) % 5;
-    altura = arrendondamento_5(altura * 100) / 100;
+    altura = (arrendondamento_5(altura * 100) / 100) % 5;
     switch (this.espessura) {
       case EspessuraVidro.e4:
         return arrendondamento_5(largura * altura * 270);
