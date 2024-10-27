@@ -29,3 +29,15 @@ double arrendondamento_5(double valor) {
     return valor;
   }
 }
+
+bool espessuraPortaMantaChumbo(EspessuraFolha espessura) {
+  switch (espessura) {
+    case EspessuraFolha.e30:
+    case EspessuraFolha.e32:
+      return false;
+    case EspessuraFolha.e35:
+    case EspessuraFolha.e40:
+    case EspessuraFolha.e45:
+      return true;
+  }
+}

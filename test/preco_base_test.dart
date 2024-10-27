@@ -27,7 +27,8 @@ void main() {
       porta.acustica = true;
       porta.largura = 800;
       expect(porta.precificarAcustica(), 150);
-      //expect(porta.precoBaseFinal(), 435);
+      expect(porta.precoBaseRevenda(), 215);
+      expect(porta.precoBaseFinal(), 285);
     });
 
     test("45 MM ACUSTICA 900 MM LARGURA", () {
@@ -35,6 +36,8 @@ void main() {
       porta.acustica = true;
       porta.largura = 900;
       expect(porta.precificarAcustica(), 250);
+      expect(porta.precoBaseRevenda_35mm(), 245);
+      expect(porta.precoBaseFinal_35mm(), 385);
     });
 
     test("35 MM ACUSTICA", () {

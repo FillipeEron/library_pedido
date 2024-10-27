@@ -154,7 +154,8 @@ enum Desenho {
 enum Vendedor {
   naldo,
   fillipe,
-  cleberson;
+  cleberson,
+  rissa;
 
   String get nome {
     switch (this) {
@@ -164,6 +165,8 @@ enum Vendedor {
         return "FILLIPE  ERON FORTES MATOS";
       case Vendedor.cleberson:
         return "CLEBERSON";
+      case Vendedor.rissa:
+        return "RISSA TAMILE";
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:auxiliar_pedidos/enums.dart';
 import 'package:auxiliar_pedidos/utils.dart';
 import 'package:hive/hive.dart';
 import 'package:auxiliar_pedidos/tiny.dart' as tiny;
+import 'package:auxiliar_pedidos/visor.dart';
 
 const String pathData = "../data/data_preco/data";
 
@@ -17,19 +18,22 @@ class PortaHDF {
   bool acustica;
   Furacao furacao;
   bool mantaChumbo;
+  Visor? visor;
+  String identificacao;
 
-  PortaHDF({
-    required this.largura,
-    this.altura = 2100,
-    this.espessuraFolha = EspessuraFolha.e30,
-    required this.cor,
-    this.desenho = Desenho.nenhum,
-    this.furacao = Furacao.nenhum,
-    this.pintura = false,
-    this.perfilU = false,
-    this.acustica = false,
-    this.mantaChumbo = false,
-  });
+  PortaHDF(
+      {required this.largura,
+      this.altura = 2100,
+      this.espessuraFolha = EspessuraFolha.e30,
+      required this.cor,
+      this.desenho = Desenho.nenhum,
+      this.furacao = Furacao.nenhum,
+      this.pintura = false,
+      this.perfilU = false,
+      this.acustica = false,
+      this.mantaChumbo = false,
+      this.visor,
+      this.identificacao = ""});
 
   String descricao() {
     descricoes.add(descricaoDimensao());
@@ -38,7 +42,25 @@ class PortaHDF {
     descricoes.add(descricaoPerfilU());
     descricoes.add(descricaoAcustica());
     descricoes.add(descricaoMantaChumbo());
+    descricoes.add(descricaoVisor());
+    descricoes.add(descricaoIdentificacao());
     return this.descricoes.join();
+  }
+
+  String descricaoIdentificacao() {
+    if (this.identificacao == "") {
+      return this.identificacao;
+    } else {
+      return "${this.identificacao}; ";
+    }
+  }
+
+  String descricaoVisor() {
+    if (this.visor != null) {
+      return this.visor!.descricao();
+    } else {
+      return "";
+    }
   }
 
   String descricaoFuracao() {
@@ -107,40 +129,57 @@ class PortaHDF {
       return "868958144";
     } else if (this.cor == CorHDF.imbuia && this.desenho != Desenho.nenhum) {
       return "868958375";
+    } else if (this.cor == CorHDF.curupixa && this.desenho == Desenho.nenhum) {
+      return "884482253";
+    } else if (this.cor == CorHDF.curupixa && this.desenho != Desenho.nenhum) {
+      return "884483553";
     } else {
       throw "ERRO AO IDENTIFICAR CODIGO DO PRODUTO";
     }
   }
 
+  double precificarVisor() {
+    double preco = 0;
+    if (this.visor != null) {
+      preco += this.visor!.precificarVidro();
+      preco += this.visor!.precificarMoldura();
+    }
+    return preco;
+  }
+
   double precificarMantaChumbo() {
-    if (this.mantaChumbo &&
-        this.espessuraFolha != EspessuraFolha.e30 &&
-        this.espessuraFolha != EspessuraFolha.e32) {
-      if (this.largura <= 500) {
-        return 1056.00 + (1056.00 * (85 / 100));
-      } else if (this.largura > 500 && this.largura <= 600) {
-        return 1267.20 + (1267.20 * (85 / 100));
-      } else if (this.largura > 600 && this.largura <= 700) {
-        return 1408.00 + (1408.00 * (85 / 100));
-      } else if (this.largura > 700 && this.largura <= 800) {
-        return 1619.20 + (1619.20 * (85 / 100));
-      } else if (this.largura > 800 && this.largura <= 900) {
-        return 1760.00 + (1760.00 * (85 / 100));
-      } else if (this.largura > 900 && this.largura <= 1000) {
-        return 2041.60 + (2041.60 * (85 / 100));
-      } else if (this.largura > 1000 && this.largura <= 1100) {
-        return 2041.60 + (2041.60 * (85 / 100));
-      } else if (this.largura > 1100 && this.largura <= 1200) {
-        return 2323.20 + (2323.20 * (85 / 100));
-      } else if (this.largura > 1200 && this.largura <= 1300) {
-        return 2604.80 + (2604.80 * (85 / 100));
+    double preco = 0;
+    if (mantaChumbo) {
+      if (espessuraPortaMantaChumbo(this.espessuraFolha)) {
+        if (this.largura <= 500) {
+          preco += 1056.00 + (1056.00 * (85 / 100));
+        } else if (this.largura > 500 && this.largura <= 600) {
+          preco += 1267.20 + (1267.20 * (85 / 100));
+        } else if (this.largura > 600 && this.largura <= 700) {
+          preco += 1408.00 + (1408.00 * (85 / 100));
+        } else if (this.largura > 700 && this.largura <= 800) {
+          preco += 1619.20 + (1619.20 * (85 / 100));
+        } else if (this.largura > 800 && this.largura <= 900) {
+          preco += 1760.00 + (1760.00 * (85 / 100));
+        } else if (this.largura > 900 && this.largura <= 1000) {
+          preco += 2041.60 + (2041.60 * (85 / 100));
+        } else if (this.largura > 1000 && this.largura <= 1100) {
+          preco += 2041.60 + (2041.60 * (85 / 100));
+        } else if (this.largura > 1100 && this.largura <= 1200) {
+          preco += 2323.20 + (2323.20 * (85 / 100));
+        } else if (this.largura > 1200 && this.largura <= 1300) {
+          preco += 2604.80 + (2604.80 * (85 / 100));
+        } else {
+          throw Exception(
+              "LARGURA DA PORTA EXCEDEU 13OO MM PARA A CAPACIDADE DA MANTA DE CHUMBO");
+        }
       } else {
         throw Exception(
-            "LARGURA DA PORTA EXCEDEU 13OO MM PARA A CAPACIDADE DA MANTA DE CHUMBO");
+            "ESPESSURA DE FOLHA ${this.espessuraFolha.espessura} NÃO PERMITIDO PARA PORTA COM MANTA DE CHUMBO, APENAS ACIMA DE 35 MM");
       }
-    } else {
-      return 0;
     }
+
+    return preco;
   }
 
   double precificarAcustica() {
@@ -348,12 +387,13 @@ class PortaHDF {
     if (espessuraFolha == EspessuraFolha.e30) {
       preco += precoBaseRevenda_30mm();
       return preco;
-    } else if (espessuraFolha == EspessuraFolha.e35) {
+    } else if ((espessuraFolha == EspessuraFolha.e35) ||
+        (espessuraFolha == EspessuraFolha.e45 && acustica)) {
       preco += precoBaseRevenda_35mm();
       return preco;
     } else {
       throw Exception(
-          "ESPESSURA DA FOLHA DE ${this.espessuraFolha} MM NÃO CONDIZ COM A TABELA DE PREÇO.");
+          "ESPESSURA DA FOLHA DE ${this.espessuraFolha.espessura} MM NÃO CONDIZ COM A TABELA DE PREÇO.");
     }
   }
 
@@ -362,7 +402,8 @@ class PortaHDF {
     if (espessuraFolha == EspessuraFolha.e30) {
       preco += precoBaseFinal_30mm();
       return preco;
-    } else if (espessuraFolha == EspessuraFolha.e35) {
+    } else if ((espessuraFolha == EspessuraFolha.e35) ||
+        (espessuraFolha == EspessuraFolha.e45 && acustica)) {
       preco += precoBaseFinal_35mm();
       return preco;
     } else {
@@ -386,6 +427,7 @@ class PortaHDF {
     preco += precificarFuracao();
     preco += precificarAcustica();
     preco += precificarMantaChumbo();
+    preco += precificarVisor();
     return preco;
   }
 }

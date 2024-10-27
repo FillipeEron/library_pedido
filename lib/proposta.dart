@@ -14,7 +14,7 @@ class Proposta {
   String validade;
   String prazoEntrega;
   String data;
-  String? observacao;
+  String observacao;
   Vendedor vendedor;
 
   Proposta({
@@ -25,6 +25,7 @@ class Proposta {
     this.prazoEntrega = "15 A 20 DIAS UTEIS",
     required this.data,
     required this.vendedor,
+    this.observacao = "",
   });
 
   Future<void> adicionarProduto(PortaHDF porta, String quantidade) async {
@@ -36,6 +37,16 @@ class Proposta {
           valorUnitario: porta.precificar(tabelaPreco).toString(),
           descricaoComplementar: porta.descricao(),
         );
+  }
+
+  void adicionarObservacao() {
+    if (observacao == "") {
+      propostaExcel.addObservacao(
+          "> PRODUTO HDF É DE USO INTERNO, NÃO PODENDO ENTRAR EM CONTATO COM ÁGUA;");
+    } else {
+      propostaExcel.addObservacao(
+          "> PRODUTO HDF É DE USO INTERNO, NÃO PODENDO ENTRAR EM CONTATO COM ÁGUA;\n> ${this.observacao.toUpperCase()}");
+    }
   }
 
   void salvar() {
@@ -50,9 +61,7 @@ class Proposta {
           data: this.data,
           vendedor: this.vendedor.nome,
         );
-
-    propostaExcel.addObservacao(
-        "> PRODUTO DE USO INTERNO, NÃO PODENDO ENTRAR EM CONTATO COM ÁGUA;");
+    adicionarObservacao();
     propostaExcel.save();
   }
 }

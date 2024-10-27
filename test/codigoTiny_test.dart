@@ -8,55 +8,71 @@ import 'package:auxiliar_pedidos/tiny.dart';
 
 void main() async {
   group("CODIGO: ", () {
+    var porta = PortaHDF(largura: 600, cor: CorHDF.mogno);
+
+    setUp(() {
+      porta.cor = CorHDF.mogno;
+      porta.desenho = Desenho.nenhum;
+    });
+
     //868957520 => FOLHA DE PORTA HDF BRANCA LISA
     test("FOLHA DE PORTA HDF BRANCA LISA", () {
-      var brancaLisa =
-          PortaHDF(largura: 600, cor: CorHDF.branco, desenho: Desenho.nenhum);
-      String idBrancaLisa = brancaLisa.codigoTiny();
+      porta.cor = CorHDF.branco;
+      porta.desenho = Desenho.nenhum;
 
-      expect(idBrancaLisa.contains("868957520"), isTrue);
+      expect(porta.codigoTiny(), "868957520");
     });
     // 868957602 => FOLHA DE PORTA HDF BRANCA FRIZZATTA
     test("FOLHA DE PORTA HDF BRANCA FRIZZATTA", () {
-      var brancaDesenhada =
-          PortaHDF(largura: 600, cor: CorHDF.branco, desenho: Desenho.c01);
-      String idBrancaDesenhada = brancaDesenhada.codigoTiny();
+      porta.cor = CorHDF.branco;
+      porta.desenho = Desenho.c04;
 
-      expect(idBrancaDesenhada.contains("868957602"), isTrue);
+      expect(porta.codigoTiny(), "868957602");
     });
     // 868957907 => FOLHA DE PORTA HDF MOGNO LISA
     test("FOLHA DE PORTA HDF MOGNO LISA", () {
-      var mognoLisa = PortaHDF(largura: 600, cor: CorHDF.mogno);
-      String idMognoLisa = mognoLisa.codigoTiny();
+      porta.cor = CorHDF.mogno;
+      porta.desenho = Desenho.nenhum;
 
-      expect(idMognoLisa.contains("868957907"), isTrue);
+      expect(porta.codigoTiny(), "868957907");
     });
 
     // 868958081 => FOLHA DE PORTA HDF MOGNO FRIZZATTA
     test("FOLHA DE PORTA HDF MOGNO FRIZZATTA", () {
-      var mognoDesenha =
-          PortaHDF(largura: 600, cor: CorHDF.mogno, desenho: Desenho.r08);
-      String idMognoDesenhada = mognoDesenha.codigoTiny();
+      porta.cor = CorHDF.mogno;
+      porta.desenho = Desenho.r01;
 
-      expect(idMognoDesenhada.contains("868958081"), isTrue);
+      expect(porta.codigoTiny(), "868958081");
     });
 
     // 868958144 => FOLHA DE PORTA HDF IMBUIA LISA
     test("FOLHA DE PORTA HDF IMBUIA LISA", () {
-      var imbuiaLisa = PortaHDF(largura: 600, cor: CorHDF.imbuia);
-      String idImbuiaLisa = imbuiaLisa.codigoTiny();
+      porta.cor = CorHDF.imbuia;
+      porta.desenho = Desenho.nenhum;
 
-      expect(idImbuiaLisa.contains("868958144"), isTrue);
+      expect(porta.codigoTiny(), "868958144");
     });
 
     // 868958375 => FOLHA DE PORTA HDF IMBUIA FRIZZATTA
 
     test("FOLHA DE PORTA HDF IMBUIA FRIZZATTA", () {
-      var imbuiaDesenha =
-          PortaHDF(largura: 600, cor: CorHDF.imbuia, desenho: Desenho.c06);
-      String idImbuiaDesenhada = imbuiaDesenha.codigoTiny();
+      porta.cor = CorHDF.imbuia;
+      porta.desenho = Desenho.r16;
+      expect(porta.codigoTiny(), "868958375");
+    });
 
-      expect(idImbuiaDesenhada.contains("868958375"), isTrue);
+    // "884482253" => FOLHA DE PORTA HDF CURUPIXA LISA
+    test("FOLHA DE PORTA HDF CURUPIXA LISA", () {
+      porta.cor = CorHDF.curupixa;
+      porta.desenho = Desenho.nenhum;
+      expect(porta.codigoTiny(), "884482253");
+    });
+
+    // "884483553" => FOLHA DE PORTA HDF CURUPIXA FRIZZATTA
+    test("FOLHA DE PORTA HDF CURUPIXA FRIZZATTA", () {
+      porta.cor = CorHDF.curupixa;
+      porta.desenho = Desenho.r05;
+      expect(porta.codigoTiny(), "884483553");
     });
   });
 }

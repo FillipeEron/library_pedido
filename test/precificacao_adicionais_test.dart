@@ -1,5 +1,6 @@
 import 'package:auxiliar_pedidos/enums.dart';
 import 'package:auxiliar_pedidos/porta_hdf.dart';
+import 'package:auxiliar_pedidos/visor.dart';
 import 'package:test/test.dart';
 import 'package:auxiliar_pedidos/tiny.dart';
 
@@ -207,6 +208,46 @@ void main() async {
     test("LARGURA 1301", () {
       porta.largura = 1301;
       expect(() => porta.precificarMantaChumbo(), throwsException);
+    });
+
+    test("30 MM LARGURA 600", () {
+      porta.largura = 600;
+      porta.espessuraFolha = EspessuraFolha.e30;
+      expect(() => porta.precificarMantaChumbo(), throwsException);
+    });
+  });
+
+  group("VISOR", () {
+    var visor = Visor(
+        moldura: Moldura.madeira,
+        espessura: EspessuraVidro.e4,
+        largura: 550,
+        altura: 650);
+
+    setUp(() {
+      visor.moldura = Moldura.madeira;
+      visor.espessura = EspessuraVidro.e4;
+      visor.largura = 550;
+      visor.altura = 650;
+    });
+    test("MOLDURA MADEIRA", () {
+      visor.moldura = Moldura.madeira;
+      expect(visor.precificarMoldura(), 85);
+    });
+
+    test("MOLDURA ALUMINIO", () {
+      visor.moldura = Moldura.aluminio;
+      expect(visor.precificarMoldura(), 135);
+    });
+
+    test("VIDRO 4X550X650 MM", () {
+      visor.espessura = EspessuraVidro.e4;
+      expect(visor.precificarVidro(), 115);
+    });
+
+    test("VIDRO 6X550X650 MM", () {
+      visor.espessura = EspessuraVidro.e6;
+      expect(visor.precificarVidro(), 190);
     });
   });
 }

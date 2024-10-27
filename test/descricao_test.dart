@@ -1,5 +1,6 @@
 import 'package:auxiliar_pedidos/enums.dart';
 import 'package:auxiliar_pedidos/porta_hdf.dart';
+import 'package:auxiliar_pedidos/visor.dart';
 import 'package:test/test.dart';
 import 'package:auxiliar_pedidos/tiny.dart';
 
@@ -101,6 +102,26 @@ void main() async {
     test("SEM MANTA DE CHUMBO", () {
       porta.mantaChumbo = false;
       expect(porta.descricaoMantaChumbo(), "");
+    });
+
+    test("VISOR MOLDURA MADEIRA 4X450X450", () {
+      porta.visor = Visor(
+          moldura: Moldura.madeira,
+          espessura: EspessuraVidro.e4,
+          largura: 450,
+          altura: 450);
+      expect(porta.descricaoVisor(),
+          "VISOR MOLDURA MADEIRA 4X${porta.visor!.largura.toInt()}X${porta.visor!.altura.toInt()} MM; ");
+    });
+
+    test("VISOR ALUMINIO 6X500X600", () {
+      porta.visor = Visor(
+          moldura: Moldura.aluminio,
+          espessura: EspessuraVidro.e6,
+          largura: 500,
+          altura: 600);
+      expect(porta.descricaoVisor(),
+          "VISOR MOLDURA ALUMINIO 6X${porta.visor!.largura.toInt()}X${porta.visor!.altura.toInt()} MM; ");
     });
   });
 }
