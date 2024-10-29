@@ -65,6 +65,26 @@ enum CorHDF {
   }
 }
 
+enum CorPostforming {
+  branco,
+  preto,
+  cinzaMedio,
+  carvalho;
+
+  String get cor {
+    switch (this) {
+      case CorPostforming.branco:
+        return "BRANCO";
+      case CorPostforming.preto:
+        return "PRETO";
+      case CorPostforming.cinzaMedio:
+        return "CINZA MEDIO";
+      case CorPostforming.carvalho:
+        return "CARVALHO";
+    }
+  }
+}
+
 enum Desenho {
   nenhum,
   c01,

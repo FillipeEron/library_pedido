@@ -36,14 +36,14 @@ class PortaHDF {
       this.identificacao = ""});
 
   String descricao() {
-    descricoes.add(descricaoDimensao());
-    descricoes.add(descricaoDesenho());
-    descricoes.add(descricaoFuracao());
-    descricoes.add(descricaoPerfilU());
-    descricoes.add(descricaoAcustica());
-    descricoes.add(descricaoMantaChumbo());
-    descricoes.add(descricaoVisor());
-    descricoes.add(descricaoIdentificacao());
+    this.descricoes.add(descricaoDimensao());
+    this.descricoes.add(descricaoDesenho());
+    this.descricoes.add(descricaoFuracao());
+    this.descricoes.add(descricaoPerfilU());
+    this.descricoes.add(descricaoAcustica());
+    this.descricoes.add(descricaoMantaChumbo());
+    this.descricoes.add(descricaoVisor());
+    this.descricoes.add(descricaoIdentificacao());
     return this.descricoes.join();
   }
 
