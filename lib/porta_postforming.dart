@@ -16,7 +16,11 @@ class PortaPostorming {
     this.identificacao = "",
   });
 
+  // PRECIFICAÇÃO
+
   //double precificar(TabelaPreco tabela) {}
+
+  // DESCRIÇÃO
 
   String descricao() {
     this.descricoes.add(descricaoDimensao());
@@ -29,14 +33,6 @@ class PortaPostorming {
     return "${this.espessuraFolha.espessura}X${this.largura.toInt()}X${this.altura.toInt()} MM; ";
   }
 
-  String descricaoIdentificacao() {
-    if (this.identificacao == "") {
-      return this.identificacao;
-    } else {
-      return "${this.identificacao}; ";
-    }
-  }
-
   String descricaoCor() {
     switch (this.cor) {
       case CorPostforming.branco:
@@ -47,6 +43,14 @@ class PortaPostorming {
         return "COR: CINZA MEDIO; ";
       case CorPostforming.carvalho:
         return "COR: CARVALHO; ";
+    }
+  }
+
+  String descricaoIdentificacao() {
+    if (this.identificacao == "") {
+      return this.identificacao;
+    } else {
+      return "${this.identificacao}; ";
     }
   }
 }

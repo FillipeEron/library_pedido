@@ -35,116 +35,95 @@ class PortaHDF {
       this.visor,
       this.identificacao = ""});
 
-  String descricao() {
-    this.descricoes.add(descricaoDimensao());
-    this.descricoes.add(descricaoDesenho());
-    this.descricoes.add(descricaoFuracao());
-    this.descricoes.add(descricaoPerfilU());
-    this.descricoes.add(descricaoAcustica());
-    this.descricoes.add(descricaoMantaChumbo());
-    this.descricoes.add(descricaoVisor());
-    this.descricoes.add(descricaoIdentificacao());
-    return this.descricoes.join();
+  // PRECIFICAÇÃO
+
+  double precificar(TabelaPreco tabela) {
+    double preco = 0;
+    switch (tabela) {
+      case TabelaPreco.revenda:
+        preco += precoBaseRevenda();
+      case TabelaPreco.clinteFinal:
+        preco += precoBaseFinal();
+    }
+    preco += precoSobMedida();
+    preco += precoDesenho();
+    preco += precoPintura();
+    preco += precificarPerfilU();
+    preco += precificarFuracao();
+    preco += precificarAcustica();
+    preco += precificarMantaChumbo();
+    preco += precificarVisor();
+    return preco;
   }
 
-  String descricaoIdentificacao() {
-    if (this.identificacao == "") {
-      return this.identificacao;
+  double precoSobMedida() {
+    if (precoSobMedidaAltura() == 0) {
+      return precoSobMedidaLargura();
     } else {
-      return "${this.identificacao}; ";
+      return precoSobMedidaAltura();
     }
   }
 
-  String descricaoVisor() {
-    if (this.visor != null) {
-      return this.visor!.descricao();
+  double precoDesenho() {
+    if (this.desenho != Desenho.nenhum) {
+      return 7.5;
     } else {
-      return "";
+      return 0;
     }
   }
 
-  String descricaoFuracao() {
+  double precoPintura() {
+    if (this.pintura && this.desenho != Desenho.nenhum) {
+      return 10;
+    } else {
+      return 0;
+    }
+  }
+
+  double precificarPerfilU() {
+    double valorMetroLinear = 20;
+    if (this.perfilU) {
+      if (this.espessuraFolha == EspessuraFolha.e35) {
+        double resultado = ((converterMetro(this.largura) * 2) +
+                (converterMetro(this.altura) * 2)) *
+            valorMetroLinear;
+        return arrendondamento_5(resultado);
+      } else {
+        throw Exception("PERFIL U É OBRIGATIRIO ESPESSURA DA FOLHA SER 35 MM");
+      }
+    } else {
+      return 0;
+    }
+  }
+
+  // VERIFICAR OBRIGATORIEDADE DA FURAÇÃO BROCA 40 E 55 PARA ESPESSURAS DE 30, 32, 35 E 45
+  double precificarFuracao() {
     switch (this.furacao) {
       case Furacao.nenhum:
-        return "";
+        return 0;
       case Furacao.frontal:
-        return "FURAÇÃO FRONTAL; ";
+        return 10;
       case Furacao.broca40:
-        return "FURAÇÃO BROCA 40; ";
+        return 15;
       case Furacao.broca55:
-        return "FURAÇÃO BROCA 55;";
+        return 20;
     }
   }
 
-  String descricaoDimensao() {
-    return "${this.espessuraFolha.espessura}X${this.largura.toInt()}X${this.altura.toInt()} MM; ";
-  }
-
-  String descricaoMantaChumbo() {
-    if (this.mantaChumbo) {
-      return "MANTA DE CHUMBO 1 MM ESPESSURA; ";
+  double precificarAcustica() {
+    if (acustica == false) {
+      return 0;
     } else {
-      return "";
-    }
-  }
-
-  String descricaoDesenho() {
-    if (this.desenho == Desenho.nenhum) {
-      return "";
-    } else {
-      if (this.pintura) {
-        return "DESENHO: ${this.desenho.codigo} C/ PINTURA; ";
+      if (this.espessuraFolha == EspessuraFolha.e45) {
+        if (this.largura <= 820) {
+          return 150;
+        } else {
+          return 250;
+        }
       } else {
-        return "DESENHO: ${this.desenho.codigo}; ";
+        throw Exception("ESPESSURA DA FOLHA PRECISA SER DE 45 MM");
       }
     }
-  }
-
-  String descricaoPerfilU() {
-    if (this.perfilU) {
-      return "PERFIL U DE ALUMINIO; ";
-    } else {
-      return "";
-    }
-  }
-
-  String descricaoAcustica() {
-    if (this.acustica) {
-      return "ESTRUTURA ACUSTICA C/ LÂ DE ROCHA; ";
-    } else {
-      return "";
-    }
-  }
-
-  String codigoTiny() {
-    if (this.cor == CorHDF.branco && this.desenho == Desenho.nenhum) {
-      return "868957520";
-    } else if (this.cor == CorHDF.branco && this.desenho != Desenho.nenhum) {
-      return "868957602";
-    } else if (this.cor == CorHDF.mogno && this.desenho == Desenho.nenhum) {
-      return "868957907";
-    } else if (this.cor == CorHDF.mogno && this.desenho != Desenho.nenhum) {
-      return "868958081";
-    } else if (this.cor == CorHDF.imbuia && this.desenho == Desenho.nenhum) {
-      return "868958144";
-    } else if (this.cor == CorHDF.imbuia && this.desenho != Desenho.nenhum) {
-      return "868958375";
-    } else if (this.cor == CorHDF.curupixa && this.desenho == Desenho.nenhum) {
-      return "884482253";
-    } else if (this.cor == CorHDF.curupixa && this.desenho != Desenho.nenhum) {
-      return "884483553";
-    } else {
-      throw "ERRO AO IDENTIFICAR CODIGO DO PRODUTO";
-    }
-  }
-
-  double precificarVisor() {
-    double preco = 0;
-    if (this.visor != null) {
-      preco += this.visor!.precificarVidro();
-      preco += this.visor!.precificarMoldura();
-    }
-    return preco;
   }
 
   double precificarMantaChumbo() {
@@ -178,54 +157,16 @@ class PortaHDF {
             "ESPESSURA DE FOLHA ${this.espessuraFolha.espessura} NÃO PERMITIDO PARA PORTA COM MANTA DE CHUMBO, APENAS ACIMA DE 35 MM");
       }
     }
-
     return preco;
   }
 
-  double precificarAcustica() {
-    if (acustica == false) {
-      return 0;
-    } else {
-      if (this.espessuraFolha == EspessuraFolha.e45) {
-        if (this.largura <= 820) {
-          return 150;
-        } else {
-          return 250;
-        }
-      } else {
-        throw Exception("ESPESSURA DA FOLHA PRECISA SER DE 45 MM");
-      }
+  double precificarVisor() {
+    double preco = 0;
+    if (this.visor != null) {
+      preco += this.visor!.precificarVidro();
+      preco += this.visor!.precificarMoldura();
     }
-  }
-
-  double precificarPerfilU() {
-    double valorMetroLinear = 20;
-    if (this.perfilU) {
-      if (this.espessuraFolha == EspessuraFolha.e35) {
-        double resultado = ((converterMetro(this.largura) * 2) +
-                (converterMetro(this.altura) * 2)) *
-            valorMetroLinear;
-        return arrendondamento_5(resultado);
-      } else {
-        throw Exception("PERFIL U É OBRIGATIRIO ESPESSURA DA FOLHA SER 35 MM");
-      }
-    } else {
-      return 0;
-    }
-  }
-
-  // VERIFICAR OBRIGATORIEDADE DA FURAÇÃO BROCA 40 E 55
-  double precificarFuracao() {
-    switch (this.furacao) {
-      case Furacao.nenhum:
-        return 0;
-      case Furacao.frontal:
-        return 10;
-      case Furacao.broca40:
-        return 15;
-      case Furacao.broca55:
-        return 20;
-    }
+    return preco;
   }
 
   double precoSobMedidaLargura() {
@@ -254,11 +195,33 @@ class PortaHDF {
     }
   }
 
-  double precoSobMedida() {
-    if (precoSobMedidaAltura() == 0) {
-      return precoSobMedidaLargura();
+  double precoBaseRevenda() {
+    double preco = 0;
+    if (espessuraFolha == EspessuraFolha.e30) {
+      preco += precoBaseRevenda_30mm();
+      return preco;
+    } else if ((espessuraFolha == EspessuraFolha.e35) ||
+        (espessuraFolha == EspessuraFolha.e45 && acustica)) {
+      preco += precoBaseRevenda_35mm();
+      return preco;
     } else {
-      return precoSobMedidaAltura();
+      throw Exception(
+          "ESPESSURA DA FOLHA DE ${this.espessuraFolha.espessura} MM NÃO CONDIZ COM A TABELA DE PREÇO.");
+    }
+  }
+
+  double precoBaseFinal() {
+    double preco = 0;
+    if (espessuraFolha == EspessuraFolha.e30) {
+      preco += precoBaseFinal_30mm();
+      return preco;
+    } else if ((espessuraFolha == EspessuraFolha.e35) ||
+        (espessuraFolha == EspessuraFolha.e45 && acustica)) {
+      preco += precoBaseFinal_35mm();
+      return preco;
+    } else {
+      throw Exception(
+          "ESPESSURA DA FOLHA DE ${this.espessuraFolha} MM NÃO CONDIZ COM A TABELA DE PREÇO.");
     }
   }
 
@@ -366,68 +329,110 @@ class PortaHDF {
     }
   }
 
-  double precoDesenho() {
-    if (this.desenho != Desenho.nenhum) {
-      return 7.5;
+  // DESCRIÇÃO
+
+  String descricao() {
+    this.descricoes.add(descricaoDimensao());
+    this.descricoes.add(descricaoDesenho());
+    this.descricoes.add(descricaoFuracao());
+    this.descricoes.add(descricaoPerfilU());
+    this.descricoes.add(descricaoAcustica());
+    this.descricoes.add(descricaoMantaChumbo());
+    this.descricoes.add(descricaoVisor());
+    this.descricoes.add(descricaoIdentificacao());
+    return this.descricoes.join();
+  }
+
+  String descricaoDimensao() {
+    return "${this.espessuraFolha.espessura}X${this.largura.toInt()}X${this.altura.toInt()} MM; ";
+  }
+
+  String descricaoDesenho() {
+    if (this.desenho == Desenho.nenhum) {
+      return "";
     } else {
-      return 0;
+      if (this.pintura) {
+        return "DESENHO: ${this.desenho.codigo} C/ PINTURA; ";
+      } else {
+        return "DESENHO: ${this.desenho.codigo}; ";
+      }
     }
   }
 
-  double precoPintura() {
-    if (this.pintura && this.desenho != Desenho.nenhum) {
-      return 10;
-    } else {
-      return 0;
+  String descricaoFuracao() {
+    switch (this.furacao) {
+      case Furacao.nenhum:
+        return "";
+      case Furacao.frontal:
+        return "FURAÇÃO FRONTAL; ";
+      case Furacao.broca40:
+        return "FURAÇÃO BROCA 40; ";
+      case Furacao.broca55:
+        return "FURAÇÃO BROCA 55;";
     }
   }
 
-  double precoBaseRevenda() {
-    double preco = 0;
-    if (espessuraFolha == EspessuraFolha.e30) {
-      preco += precoBaseRevenda_30mm();
-      return preco;
-    } else if ((espessuraFolha == EspessuraFolha.e35) ||
-        (espessuraFolha == EspessuraFolha.e45 && acustica)) {
-      preco += precoBaseRevenda_35mm();
-      return preco;
+  String descricaoPerfilU() {
+    if (this.perfilU) {
+      return "PERFIL U DE ALUMINIO; ";
     } else {
-      throw Exception(
-          "ESPESSURA DA FOLHA DE ${this.espessuraFolha.espessura} MM NÃO CONDIZ COM A TABELA DE PREÇO.");
+      return "";
     }
   }
 
-  double precoBaseFinal() {
-    double preco = 0;
-    if (espessuraFolha == EspessuraFolha.e30) {
-      preco += precoBaseFinal_30mm();
-      return preco;
-    } else if ((espessuraFolha == EspessuraFolha.e35) ||
-        (espessuraFolha == EspessuraFolha.e45 && acustica)) {
-      preco += precoBaseFinal_35mm();
-      return preco;
+  String descricaoAcustica() {
+    if (this.acustica) {
+      return "ESTRUTURA ACUSTICA C/ LÂ DE ROCHA; ";
     } else {
-      throw Exception(
-          "ESPESSURA DA FOLHA DE ${this.espessuraFolha} MM NÃO CONDIZ COM A TABELA DE PREÇO.");
+      return "";
     }
   }
 
-  double precificar(TabelaPreco tabela) {
-    double preco = 0;
-    switch (tabela) {
-      case TabelaPreco.revenda:
-        preco += precoBaseRevenda();
-      case TabelaPreco.clinteFinal:
-        preco += precoBaseFinal();
+  String descricaoMantaChumbo() {
+    if (this.mantaChumbo) {
+      return "MANTA DE CHUMBO 1 MM ESPESSURA; ";
+    } else {
+      return "";
     }
-    preco += precoSobMedida();
-    preco += precoDesenho();
-    preco += precoPintura();
-    preco += precificarPerfilU();
-    preco += precificarFuracao();
-    preco += precificarAcustica();
-    preco += precificarMantaChumbo();
-    preco += precificarVisor();
-    return preco;
+  }
+
+  String descricaoVisor() {
+    if (this.visor != null) {
+      return this.visor!.descricao();
+    } else {
+      return "";
+    }
+  }
+
+  String descricaoIdentificacao() {
+    if (this.identificacao == "") {
+      return this.identificacao;
+    } else {
+      return "${this.identificacao}; ";
+    }
+  }
+
+  // OUTROS METODOS
+
+  String codigoTiny() {
+    if (this.cor == CorHDF.branco && this.desenho == Desenho.nenhum) {
+      return "868957520";
+    } else if (this.cor == CorHDF.branco && this.desenho != Desenho.nenhum) {
+      return "868957602";
+    } else if (this.cor == CorHDF.mogno && this.desenho == Desenho.nenhum) {
+      return "868957907";
+    } else if (this.cor == CorHDF.mogno && this.desenho != Desenho.nenhum) {
+      return "868958081";
+    } else if (this.cor == CorHDF.imbuia && this.desenho == Desenho.nenhum) {
+      return "868958144";
+    } else if (this.cor == CorHDF.imbuia && this.desenho != Desenho.nenhum) {
+      return "868958375";
+    } else if (this.cor == CorHDF.curupixa && this.desenho == Desenho.nenhum) {
+      return "884482253";
+    } else if (this.cor == CorHDF.curupixa && this.desenho != Desenho.nenhum) {
+      return "884483553";
+    } else {
+      throw "ERRO AO IDENTIFICAR CODIGO DO PRODUTO";
+    }
   }
 }
